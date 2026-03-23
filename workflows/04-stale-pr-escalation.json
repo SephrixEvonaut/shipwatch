@@ -1,0 +1,318 @@
+{
+  "name": "ShipWatch: Stale PR Escalation",
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "tags": [],
+  "nodes": [
+    {
+      "id": "e6b9f2c1-4001-4000-8000-000000000001",
+      "name": "Weekday 10AM Trigger",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [240, 300],
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "cronExpression",
+              "expression": "0 10 * * 1-5"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "e6b9f2c1-4001-4000-8000-000000000002",
+      "name": "Fetch Open PRs",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [480, 300],
+      "parameters": {
+        "method": "GET",
+        "url": "=https://api.github.com/repos/{{ $env.GITHUB_REPO }}/pulls",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "=Bearer {{ $env.GITHUB_TOKEN }}"
+            },
+            {
+              "name": "Accept",
+              "value": "application/vnd.github.v3+json"
+            }
+          ]
+        },
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            { "name": "state", "value": "open" },
+            { "name": "sort", "value": "updated" },
+            { "name": "direction", "value": "asc" },
+            { "name": "per_page", "value": "100" }
+          ]
+        },
+        "options": {}
+      }
+    },
+    {
+      "id": "e6b9f2c1-4001-4000-8000-000000000003",
+      "name": "Filter Stale PRs",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [720, 300],
+      "parameters": {
+        "jsCode": "// stale-pr-filter.js\n// N8N Code node — Phase 4: Stale PR Escalation\n// Receives open PRs from the GitHub API and filters/categorizes stale ones.\n\nconst WARNING_HOURS = 48; // 2 days\nconst CRITICAL_HOURS = 120; // 5 days\n\n// ── 1. Current timestamp ─────────────────────────────────────────────────────\nconst now = Date.now();\n\n// ── 2. Process each PR ───────────────────────────────────────────────────────\nconst warnings = [];\nconst critical = [];\n\nfor (const item of $input.all()) {\n  const pr = item.json;\n\n  const updatedAt = new Date(pr.updated_at);\n  const hoursSinceUpdate = (now - updatedAt.getTime()) / 3600000;\n\n  if (hoursSinceUpdate < WARNING_HOURS) continue; // still fresh\n\n  const days = Math.floor(hoursSinceUpdate / 24);\n  const remainingHours = Math.floor(hoursSinceUpdate % 24);\n  const reviewers = (pr.requested_reviewers ?? []).map((r) => r.login);\n\n  const entry = {\n    number: pr.number,\n    title: pr.title,\n    author: pr.user?.login ?? \"unknown\",\n    url: pr.html_url,\n    hours_stale: Math.round(hoursSinceUpdate),\n    days_stale: days,\n    category: hoursSinceUpdate >= CRITICAL_HOURS ? \"critical\" : \"warning\",\n    requested_reviewers: reviewers,\n    last_updated: pr.updated_at,\n    slack_line:\n      `• <${pr.html_url}|PR #${pr.number}: ${pr.title}>` +\n      ` — by ${pr.user?.login ?? \"unknown\"}, stale ${days}d ${remainingHours}h` +\n      ` — reviewers: ${reviewers.length > 0 ? reviewers.join(\", \") : \"none assigned\"}`,\n  };\n\n  if (entry.category === \"critical\") {\n    critical.push(entry);\n  } else {\n    warnings.push(entry);\n  }\n}\n\n// ── 3. Sort most stale first ─────────────────────────────────────────────────\ncritical.sort((a, b) => b.hours_stale - a.hours_stale);\nwarnings.sort((a, b) => b.hours_stale - a.hours_stale);\n\n// ── 4. Return ────────────────────────────────────────────────────────────────\nreturn [\n  {\n    json: {\n      warnings,\n      critical,\n      total_stale: warnings.length + critical.length,\n      total_warnings: warnings.length,\n      total_critical: critical.length,\n    },\n  },\n];\n",
+        "mode": "runOnceForAllItems"
+      }
+    },
+    {
+      "id": "e6b9f2c1-4001-4000-8000-000000000004",
+      "name": "Any Stale PRs?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [960, 300],
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "cond-stale-check",
+              "leftValue": "={{ $json.total_stale }}",
+              "rightValue": "0",
+              "operator": {
+                "type": "number",
+                "operation": "gt"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      }
+    },
+    {
+      "id": "e6b9f2c1-4001-4000-8000-000000000005",
+      "name": "No Stale PRs",
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [1200, 500],
+      "parameters": {}
+    },
+    {
+      "id": "e6b9f2c1-4001-4000-8000-000000000006",
+      "name": "Has Warnings?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [1200, 200],
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "cond-warnings-check",
+              "leftValue": "={{ $json.total_warnings }}",
+              "rightValue": "0",
+              "operator": {
+                "type": "number",
+                "operation": "gt"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      }
+    },
+    {
+      "id": "e6b9f2c1-4001-4000-8000-000000000007",
+      "name": "Post Warning Roundup",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1440, 100],
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $env.SLACK_WEBHOOK_ENGINEERING }}",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ blocks: [ { type: 'header', text: { type: 'plain_text', text: '⏰ Stale PR Roundup — ' + new Date().toISOString().slice(0, 10), emoji: true } }, { type: 'divider' }, { type: 'section', text: { type: 'mrkdwn', text: '*Warning: PRs stale 2-4 days (' + $json.total_warnings + '):*\\n' + $json.warnings.map(function(p) { return p.slack_line; }).join('\\n') } }, { type: 'divider' }, { type: 'context', elements: [{ type: 'mrkdwn', text: 'ShipWatch • Total stale: ' + $json.total_stale + ' | Warnings: ' + $json.total_warnings + ' | Critical: ' + $json.total_critical }] } ], text: '⏰ Stale PR Roundup — ' + $json.total_stale + ' PRs need attention' }) }}",
+        "options": {}
+      }
+    },
+    {
+      "id": "e6b9f2c1-4001-4000-8000-000000000008",
+      "name": "Any Critical?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [1440, 300],
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "cond-critical-check",
+              "leftValue": "={{ $json.total_critical }}",
+              "rightValue": "0",
+              "operator": {
+                "type": "number",
+                "operation": "gt"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      }
+    },
+    {
+      "id": "e6b9f2c1-4001-4000-8000-000000000009",
+      "name": "Escalate Critical to #leads",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1700, 200],
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $env.SLACK_WEBHOOK_LEADS }}",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ blocks: [ { type: 'header', text: { type: 'plain_text', text: '🚨 Critical: PRs stale 5+ days', emoji: true } }, { type: 'divider' }, { type: 'section', text: { type: 'mrkdwn', text: '<!channel> The following PRs have been stale for *5+ days* and need immediate attention:\\n\\n' + $json.critical.map(function(p) { return p.slack_line; }).join('\\n') } }, { type: 'divider' }, { type: 'context', elements: [{ type: 'mrkdwn', text: 'ShipWatch Escalation • ' + $json.total_critical + ' critical PR(s) • ' + new Date().toISOString().slice(0, 10) }] } ], text: '🚨 CRITICAL: ' + $json.total_critical + ' PR(s) stale 5+ days — immediate attention required' }) }}",
+        "options": {}
+      }
+    },
+    {
+      "id": "e6b9f2c1-4001-4000-8000-000000000010",
+      "name": "Split Critical PRs",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1940, 200],
+      "parameters": {
+        "jsCode": "// Split the critical array into individual items for the loop\nconst critical = $input.all()[0].json.critical;\nreturn critical.map(function(pr) {\n  return { json: pr };\n});\n",
+        "mode": "runOnceForAllItems"
+      }
+    },
+    {
+      "id": "e6b9f2c1-4001-4000-8000-000000000011",
+      "name": "Log Escalation",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [2180, 200],
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $env.SUPABASE_URL + '/rest/v1/escalations' }}",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "apikey",
+              "value": "={{ $env.SUPABASE_ANON_KEY }}"
+            },
+            {
+              "name": "Authorization",
+              "value": "=Bearer {{ $env.SUPABASE_ANON_KEY }}"
+            },
+            {
+              "name": "Prefer",
+              "value": "return=minimal"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ escalation_type: 'stale_pr', github_url: $json.url, github_repo: $env.GITHUB_REPO, author: $json.author, days_stale: $json.days_stale, escalated_to: '#leads' }) }}",
+        "options": {}
+      }
+    },
+    {
+      "id": "e6b9f2c1-4001-4000-8000-000000000012",
+      "name": "Error Trigger",
+      "type": "n8n-nodes-base.errorTrigger",
+      "typeVersion": 1,
+      "position": [240, 560],
+      "parameters": {}
+    },
+    {
+      "id": "e6b9f2c1-4001-4000-8000-000000000013",
+      "name": "Build Error Message",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [480, 560],
+      "parameters": {
+        "jsCode": "const error = $input.all()[0].json;\nconst msg = error.execution?.error?.message ?? \"Unknown error\";\nconst executionId = error.execution?.id ?? \"N/A\";\nreturn [{\n  json: {\n    text: \"⚠️ *ShipWatch: Stale PR Escalation failed*\\nExecution: \" + executionId + \"\\nError: \" + msg\n  }\n}];",
+        "mode": "runOnceForAllItems"
+      }
+    },
+    {
+      "id": "e6b9f2c1-4001-4000-8000-000000000014",
+      "name": "Send Error Alert",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [720, 560],
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $env.SLACK_WEBHOOK_ENGINEERING }}",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ text: $json.text }) }}",
+        "options": {}
+      }
+    }
+  ],
+  "connections": {
+    "Weekday 10AM Trigger": {
+      "main": [[{ "node": "Fetch Open PRs", "type": "main", "index": 0 }]]
+    },
+    "Fetch Open PRs": {
+      "main": [[{ "node": "Filter Stale PRs", "type": "main", "index": 0 }]]
+    },
+    "Filter Stale PRs": {
+      "main": [[{ "node": "Any Stale PRs?", "type": "main", "index": 0 }]]
+    },
+    "Any Stale PRs?": {
+      "main": [
+        [
+          { "node": "Has Warnings?", "type": "main", "index": 0 },
+          { "node": "Any Critical?", "type": "main", "index": 0 }
+        ],
+        [{ "node": "No Stale PRs", "type": "main", "index": 0 }]
+      ]
+    },
+    "Has Warnings?": {
+      "main": [
+        [{ "node": "Post Warning Roundup", "type": "main", "index": 0 }],
+        []
+      ]
+    },
+    "Any Critical?": {
+      "main": [
+        [{ "node": "Escalate Critical to #leads", "type": "main", "index": 0 }],
+        []
+      ]
+    },
+    "Escalate Critical to #leads": {
+      "main": [[{ "node": "Split Critical PRs", "type": "main", "index": 0 }]]
+    },
+    "Split Critical PRs": {
+      "main": [[{ "node": "Log Escalation", "type": "main", "index": 0 }]]
+    },
+    "Error Trigger": {
+      "main": [[{ "node": "Build Error Message", "type": "main", "index": 0 }]]
+    },
+    "Build Error Message": {
+      "main": [[{ "node": "Send Error Alert", "type": "main", "index": 0 }]]
+    }
+  }
+}

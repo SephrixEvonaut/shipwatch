@@ -1,0 +1,542 @@
+{
+  "name": "ShipWatch: Weekly Health Digest",
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "tags": [],
+  "nodes": [
+    {
+      "id": "d5a8f1b0-3001-4000-8000-000000000001",
+      "name": "Weekly Monday Trigger",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        240,
+        300
+      ],
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "cronExpression",
+              "expression": "0 9 * * 1"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "d5a8f1b0-3001-4000-8000-000000000002",
+      "name": "Fetch Week's PRs",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        520,
+        100
+      ],
+      "parameters": {
+        "method": "GET",
+        "url": "=https://api.github.com/repos/{{ $env.GITHUB_REPO }}/pulls",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "=Bearer {{ $env.GITHUB_TOKEN }}"
+            },
+            {
+              "name": "Accept",
+              "value": "application/vnd.github.v3+json"
+            }
+          ]
+        },
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "state",
+              "value": "all"
+            },
+            {
+              "name": "sort",
+              "value": "updated"
+            },
+            {
+              "name": "direction",
+              "value": "desc"
+            },
+            {
+              "name": "per_page",
+              "value": "100"
+            }
+          ]
+        },
+        "options": {}
+      }
+    },
+    {
+      "id": "d5a8f1b0-3001-4000-8000-000000000003",
+      "name": "Fetch Week's Issues",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        520,
+        300
+      ],
+      "parameters": {
+        "method": "GET",
+        "url": "=https://api.github.com/repos/{{ $env.GITHUB_REPO }}/issues",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "=Bearer {{ $env.GITHUB_TOKEN }}"
+            },
+            {
+              "name": "Accept",
+              "value": "application/vnd.github.v3+json"
+            }
+          ]
+        },
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "state",
+              "value": "all"
+            },
+            {
+              "name": "sort",
+              "value": "updated"
+            },
+            {
+              "name": "direction",
+              "value": "desc"
+            },
+            {
+              "name": "per_page",
+              "value": "100"
+            },
+            {
+              "name": "since",
+              "value": "={{ (function(){ var d=new Date(); var day=d.getUTCDay(); var diff=day===0?6:day-1; d.setUTCDate(d.getUTCDate()-diff-7); d.setUTCHours(0,0,0,0); return d.toISOString(); })() }}"
+            }
+          ]
+        },
+        "options": {}
+      }
+    },
+    {
+      "id": "d5a8f1b0-3001-4000-8000-000000000004",
+      "name": "Fetch Stored Analyses",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        520,
+        500
+      ],
+      "parameters": {
+        "method": "GET",
+        "url": "={{ $env.SUPABASE_URL + '/rest/v1/pr_analyses?analyzed_at=gte.' + (function(){ var d=new Date(); var day=d.getUTCDay(); var diff=day===0?6:day-1; d.setUTCDate(d.getUTCDate()-diff-7); d.setUTCHours(0,0,0,0); return d.toISOString(); })() }}",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "apikey",
+              "value": "={{ $env.SUPABASE_ANON_KEY }}"
+            },
+            {
+              "name": "Authorization",
+              "value": "=Bearer {{ $env.SUPABASE_ANON_KEY }}"
+            }
+          ]
+        },
+        "options": {}
+      }
+    },
+    {
+      "id": "d5a8f1b0-3001-4000-8000-000000000005",
+      "name": "Merge All Data",
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3,
+      "position": [
+        800,
+        300
+      ],
+      "parameters": {
+        "mode": "append",
+        "options": {}
+      }
+    },
+    {
+      "id": "d5a8f1b0-3001-4000-8000-000000000006",
+      "name": "Merge With Analyses",
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3,
+      "position": [
+        1020,
+        300
+      ],
+      "parameters": {
+        "mode": "append",
+        "options": {}
+      }
+    },
+    {
+      "id": "d5a8f1b0-3001-4000-8000-000000000007",
+      "name": "Aggregate Digest Data",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1240,
+        300
+      ],
+      "parameters": {
+        "jsCode": "// digest-aggregator.js\r\n// N8N Code node — Phase 3: Weekly Health Digest\r\n// Receives items from three parallel data sources (GitHub PRs, GitHub Issues,\r\n// Supabase PR analyses) and aggregates them into stats + an AI prompt for\r\n// generating an executive digest.\r\n\r\n// ── 1. Calculate the reporting window (last Mon → this Mon) ──────────────────\r\nconst now = new Date();\r\nconst dayOfWeek = now.getUTCDay(); // 0 = Sun\r\nconst diffToMonday = dayOfWeek === 0 ? 6 : dayOfWeek - 1;\r\n\r\nconst thisMonday = new Date(now);\r\nthisMonday.setUTCDate(now.getUTCDate() - diffToMonday);\r\nthisMonday.setUTCHours(0, 0, 0, 0);\r\n\r\nconst lastMonday = new Date(thisMonday);\r\nlastMonday.setUTCDate(thisMonday.getUTCDate() - 7);\r\n\r\nconst weekStart = lastMonday.toISOString().slice(0, 10); // \"YYYY-MM-DD\"\r\nconst weekEnd = thisMonday.toISOString().slice(0, 10);\r\n\r\n// ── 2. Safely collect the three input arrays ─────────────────────────────────\r\n// The items arrive from three parallel branches merged together.\r\n// Each item has a __source field or we identify them by shape.\r\nconst allItems = $input.all().map((i) => i.json);\r\n\r\n// Partition by source — the workflow tags each HTTP Request node output.\r\n// If tags are missing, we try best-effort by looking at data shapes.\r\nlet prsRaw = [];\r\nlet issuesRaw = [];\r\nlet analysesRaw = [];\r\n\r\nfor (const item of allItems) {\r\n  if (\r\n    item._source === \"prs\" ||\r\n    item.pull_request !== undefined ||\r\n    item.merged_at !== undefined\r\n  ) {\r\n    prsRaw.push(item);\r\n  } else if (\r\n    item._source === \"issues\" ||\r\n    (item.number !== undefined &&\r\n      item.pull_request === undefined &&\r\n      item.risk_level === undefined)\r\n  ) {\r\n    issuesRaw.push(item);\r\n  } else if (item._source === \"analyses\" || item.risk_level !== undefined) {\r\n    analysesRaw.push(item);\r\n  }\r\n}\r\n\r\n// ── 3. Aggregate PR stats ────────────────────────────────────────────────────\r\nlet prStats = {\r\n  total: 0,\r\n  merged: 0,\r\n  open: 0,\r\n  avgHoursToMerge: null,\r\n  available: true,\r\n};\r\n\r\ntry {\r\n  prStats.total = prsRaw.length;\r\n  const merged = prsRaw.filter((p) => p.merged_at);\r\n  prStats.merged = merged.length;\r\n  prStats.open = prsRaw.filter((p) => p.state === \"open\").length;\r\n\r\n  if (merged.length > 0) {\r\n    const totalHours = merged.reduce((sum, p) => {\r\n      const created = new Date(p.created_at);\r\n      const mergedAt = new Date(p.merged_at);\r\n      return sum + (mergedAt - created) / 3600000;\r\n    }, 0);\r\n    prStats.avgHoursToMerge = Math.round(totalHours / merged.length);\r\n  }\r\n} catch (_) {\r\n  prStats = {\r\n    total: 0,\r\n    merged: 0,\r\n    open: 0,\r\n    avgHoursToMerge: null,\r\n    available: false,\r\n  };\r\n}\r\n\r\n// ── 4. Aggregate Issue stats ─────────────────────────────────────────────────\r\nlet issueStats = { totalOpened: 0, closed: 0, stillOpen: 0, available: true };\r\n\r\ntry {\r\n  issueStats.totalOpened = issuesRaw.length;\r\n  issueStats.closed = issuesRaw.filter((i) => i.state === \"closed\").length;\r\n  issueStats.stillOpen = issuesRaw.filter((i) => i.state === \"open\").length;\r\n} catch (_) {\r\n  issueStats = { totalOpened: 0, closed: 0, stillOpen: 0, available: false };\r\n}\r\n\r\n// ── 5. Aggregate PR-analysis risk breakdown ──────────────────────────────────\r\nlet riskCounts = { low: 0, medium: 0, high: 0, critical: 0, available: true };\r\n\r\ntry {\r\n  for (const a of analysesRaw) {\r\n    const level = (a.risk_level || \"\").toLowerCase();\r\n    if (level in riskCounts) riskCounts[level]++;\r\n  }\r\n} catch (_) {\r\n  riskCounts = { low: 0, medium: 0, high: 0, critical: 0, available: false };\r\n}\r\n\r\n// ── 6. Aggregate issue-classification breakdown (if present) ─────────────────\r\nlet classificationCounts = {\r\n  bug: 0,\r\n  feature: 0,\r\n  question: 0,\r\n  documentation: 0,\r\n  security: 0,\r\n};\r\nlet priorityCounts = { P0: 0, P1: 0, P2: 0, P3: 0 };\r\nlet classificationsAvailable = false;\r\n\r\nfor (const a of analysesRaw) {\r\n  if (a.classification) {\r\n    classificationsAvailable = true;\r\n    const cls = a.classification.toLowerCase();\r\n    if (cls in classificationCounts) classificationCounts[cls]++;\r\n  }\r\n  if (a.priority) {\r\n    const p = a.priority.toUpperCase();\r\n    if (p in priorityCounts) priorityCounts[p]++;\r\n  }\r\n}\r\n\r\n// ── 7. Build the raw_stats summary object ────────────────────────────────────\r\nconst raw_stats = {\r\n  week_start: weekStart,\r\n  week_end: weekEnd,\r\n  prs: prStats,\r\n  issues: issueStats,\r\n  risk_breakdown: riskCounts,\r\n  classification_breakdown: classificationsAvailable\r\n    ? classificationCounts\r\n    : null,\r\n  priority_breakdown: classificationsAvailable ? priorityCounts : null,\r\n};\r\n\r\n// ── 8. Build the AI prompts ──────────────────────────────────────────────────\r\nconst system_prompt =\r\n  \"You are a senior engineering manager writing a concise weekly health digest \" +\r\n  \"for your team. Be data-driven, specific, and actionable. \" +\r\n  \"Respond ONLY with valid JSON, no markdown fences.\";\r\n\r\nconst dataSections = [];\r\n\r\n// PRs section\r\nif (prStats.available && prStats.total > 0) {\r\n  dataSections.push(`### Pull Requests\r\n- Total PRs: ${prStats.total}\r\n- Merged: ${prStats.merged}\r\n- Still open: ${prStats.open}\r\n- Avg hours to merge: ${prStats.avgHoursToMerge ?? \"N/A\"}`);\r\n} else {\r\n  dataSections.push(\r\n    \"### Pull Requests\\n_No PR data available for this period._\",\r\n  );\r\n}\r\n\r\n// Issues section\r\nif (issueStats.available && issueStats.totalOpened > 0) {\r\n  dataSections.push(`### Issues\r\n- Total opened: ${issueStats.totalOpened}\r\n- Closed: ${issueStats.closed}\r\n- Still open: ${issueStats.stillOpen}`);\r\n} else {\r\n  dataSections.push(\"### Issues\\n_No issue data available for this period._\");\r\n}\r\n\r\n// Risk breakdown\r\nif (riskCounts.available) {\r\n  dataSections.push(`### PR Risk Analysis\r\n- Low risk: ${riskCounts.low}\r\n- Medium risk: ${riskCounts.medium}\r\n- High risk: ${riskCounts.high}\r\n- Critical risk: ${riskCounts.critical}`);\r\n} else {\r\n  dataSections.push(\"### PR Risk Analysis\\n_No analysis data available._\");\r\n}\r\n\r\n// Classification breakdown (optional)\r\nif (classificationsAvailable) {\r\n  dataSections.push(`### Issue Classifications\r\n- Bugs: ${classificationCounts.bug}\r\n- Features: ${classificationCounts.feature}\r\n- Questions: ${classificationCounts.question}\r\n- Documentation: ${classificationCounts.documentation}\r\n- Security: ${classificationCounts.security}\r\n\r\n### Issue Priorities\r\n- P0 (critical): ${priorityCounts.P0}\r\n- P1 (high): ${priorityCounts.P1}\r\n- P2 (medium): ${priorityCounts.P2}\r\n- P3 (low): ${priorityCounts.P3}`);\r\n}\r\n\r\nconst user_prompt = `## Weekly Repository Health Digest\r\n**Period:** ${weekStart} to ${weekEnd}\r\n\r\n${dataSections.join(\"\\n\\n\")}\r\n\r\n## Your Task\r\n\r\nWrite a weekly digest containing:\r\n1. A **3-paragraph executive summary** covering: (a) overall velocity and health, (b) risk and quality observations, (c) team workload and trends.\r\n2. **Top 3 highlights** — positive things worth celebrating.\r\n3. **Top 3 concerns** — areas that need attention or are trending negatively.\r\n4. A **recommended focus area** for next week (1-2 sentences).\r\n\r\nRespond with **only** a JSON object (no markdown, no extra text) containing exactly these fields:\r\n\r\n{\r\n  \"executive_summary\": \"Three paragraphs joined with \\\\n\\\\n\",\r\n  \"highlights\": [\"highlight 1\", \"highlight 2\", \"highlight 3\"],\r\n  \"concerns\": [\"concern 1\", \"concern 2\", \"concern 3\"],\r\n  \"focus_area\": \"Recommended focus for next week\"\r\n}`;\r\n\r\n// ── 9. Return ────────────────────────────────────────────────────────────────\r\nreturn [\r\n  {\r\n    json: {\r\n      system_prompt,\r\n      user_prompt,\r\n      week_start: weekStart,\r\n      week_end: weekEnd,\r\n      raw_stats,\r\n    },\r\n  },\r\n];\r\n",
+        "mode": "runOnceForAllItems"
+      }
+    },
+    {
+      "id": "d5a8f1b0-3001-4000-8000-000000000008",
+      "name": "Generate AI Summary",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1460,
+        300
+      ],
+      "notes": "ANTHROPIC (active). For OpenAI: change url, replace x-api-key with Authorization: Bearer $env.OPENAI_API_KEY, use model gpt-4o-mini.",
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.anthropic.com/v1/messages",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "x-api-key",
+              "value": "={{ $env.ANTHROPIC_API_KEY }}"
+            },
+            {
+              "name": "anthropic-version",
+              "value": "2023-06-01"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ model: 'claude-sonnet-4-20250514', max_tokens: 2048, messages: [{ role: 'user', content: $json.system_prompt + '\\n\\n' + $json.user_prompt }] }) }}",
+        "options": {}
+      }
+    },
+    {
+      "id": "d5a8f1b0-3001-4000-8000-000000000009",
+      "name": "Merge AI + Stats",
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3,
+      "position": [
+        1680,
+        300
+      ],
+      "parameters": {
+        "mode": "combine",
+        "combinationMode": "mergeByPosition",
+        "options": {}
+      }
+    },
+    {
+      "id": "d5a8f1b0-3001-4000-8000-000000000010",
+      "name": "Format Digest",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1900,
+        300
+      ],
+      "parameters": {
+        "jsCode": "// Format Digest — parses AI response and builds Slack, HTML, and Markdown outputs.\nconst input = $input.all()[0].json;\nconst stats = input.raw_stats;\nconst weekStart = input.week_start;\nconst weekEnd = input.week_end;\n\n// Extract AI text from Anthropic response\nlet aiText = \"\";\ntry { aiText = input.content[0].text; } catch (_) {}\n\nlet digest;\ntry {\n  let raw = aiText;\n  raw = raw.replace(/\\`\\`\\`(?:json)?\\s*/gi, \"\").replace(/\\`\\`\\`/g, \"\").trim();\n  digest = JSON.parse(raw);\n} catch (err) {\n  console.error(\"Failed to parse digest AI response:\", err.message);\n  digest = {\n    executive_summary: \"Digest generation failed — AI response could not be parsed.\",\n    highlights: [\"N/A\"],\n    concerns: [\"AI digest generation needs investigation\"],\n    focus_area: \"Fix digest pipeline\"\n  };\n}\n\n// ── Slack Block Kit ──\nconst blocks = [];\n\nblocks.push({ type: \"header\", text: { type: \"plain_text\", text: \"📊 Weekly Health Digest: \" + weekStart + \" → \" + weekEnd, emoji: true } });\nblocks.push({ type: \"divider\" });\n\n// Executive summary (split paragraphs into separate sections)\nconst paragraphs = digest.executive_summary.split(/\\n\\n|\\\\n\\\\n/);\nfor (const p of paragraphs) {\n  blocks.push({ type: \"section\", text: { type: \"mrkdwn\", text: p } });\n}\n\nblocks.push({ type: \"divider\" });\n\n// Highlights\nblocks.push({ type: \"section\", text: { type: \"mrkdwn\", text: \"*✅ Highlights*\\n\" + digest.highlights.map(function(h) { return \"• \" + h; }).join(\"\\n\") } });\n\n// Concerns\nblocks.push({ type: \"section\", text: { type: \"mrkdwn\", text: \"*⚠️ Concerns*\\n\" + digest.concerns.map(function(c) { return \"• \" + c; }).join(\"\\n\") } });\n\nblocks.push({ type: \"divider\" });\n\n// Focus area\nblocks.push({ type: \"section\", text: { type: \"mrkdwn\", text: \"*🎯 Focus for Next Week*\\n\" + digest.focus_area } });\n\n// Stats context\nconst statsLine = \"PRs: \" + (stats.prs?.total ?? 0) + \" | Issues: \" + (stats.issues?.totalOpened ?? 0) + \" | High/Critical PRs: \" + ((stats.risk_breakdown?.high ?? 0) + (stats.risk_breakdown?.critical ?? 0));\nblocks.push({ type: \"context\", elements: [{ type: \"mrkdwn\", text: statsLine }] });\n\n// ── HTML email ──\nconst highlightsHtml = digest.highlights.map(function(h) { return \"<li>\" + h + \"</li>\"; }).join(\"\");\nconst concernsHtml = digest.concerns.map(function(c) { return \"<li>\" + c + \"</li>\"; }).join(\"\");\nconst summaryHtml = paragraphs.map(function(p) { return \"<p>\" + p + \"</p>\"; }).join(\"\");\n\nconst html_body = '<div style=\"font-family:sans-serif;max-width:640px;margin:auto;\">'\n  + '<h1 style=\"color:#333;\">📊 Weekly Health Digest</h1>'\n  + '<p style=\"color:#666;\">' + weekStart + ' → ' + weekEnd + '</p>'\n  + '<hr>'\n  + '<h2>Executive Summary</h2>' + summaryHtml\n  + '<h2>✅ Highlights</h2><ul>' + highlightsHtml + '</ul>'\n  + '<h2>⚠️ Concerns</h2><ul>' + concernsHtml + '</ul>'\n  + '<h2>🎯 Focus for Next Week</h2><p>' + digest.focus_area + '</p>'\n  + '<hr>'\n  + '<p style=\"color:#999;font-size:12px;\">Generated by ShipWatch • PRs: ' + (stats.prs?.total ?? 0)\n  + ' | Issues: ' + (stats.issues?.totalOpened ?? 0)\n  + ' | High/Critical: ' + ((stats.risk_breakdown?.high ?? 0) + (stats.risk_breakdown?.critical ?? 0)) + '</p>'\n  + '</div>';\n\n// ── Markdown for Supabase storage ──\nconst digest_markdown = '# Weekly Health Digest: ' + weekStart + ' → ' + weekEnd + '\\n\\n'\n  + '## Executive Summary\\n\\n' + digest.executive_summary + '\\n\\n'\n  + '## Highlights\\n\\n' + digest.highlights.map(function(h) { return '- ' + h; }).join('\\n') + '\\n\\n'\n  + '## Concerns\\n\\n' + digest.concerns.map(function(c) { return '- ' + c; }).join('\\n') + '\\n\\n'\n  + '## Focus for Next Week\\n\\n' + digest.focus_area;\n\nreturn [{\n  json: {\n    slack_blocks: blocks,\n    slack_text: \"📊 Weekly Health Digest: \" + weekStart + \" → \" + weekEnd,\n    html_body: html_body,\n    digest_markdown: digest_markdown,\n    week_start: weekStart,\n    week_end: weekEnd,\n    total_prs: stats.prs?.total ?? 0,\n    total_issues: stats.issues?.totalOpened ?? 0,\n    total_commits: 0,\n    high_risk_prs: (stats.risk_breakdown?.high ?? 0) + (stats.risk_breakdown?.critical ?? 0),\n    p0_p1_bugs: (stats.priority_breakdown?.P0 ?? 0) + (stats.priority_breakdown?.P1 ?? 0),\n    raw_stats: stats,\n    raw_ai_response: digest\n  }\n}];",
+        "mode": "runOnceForAllItems"
+      }
+    },
+    {
+      "id": "d5a8f1b0-3001-4000-8000-000000000011",
+      "name": "Post Digest to #engineering",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        2120,
+        200
+      ],
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $env.SLACK_WEBHOOK_ENGINEERING }}",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ blocks: $json.slack_blocks, text: $json.slack_text }) }}",
+        "options": {}
+      }
+    },
+    {
+      "id": "d5a8f1b0-3001-4000-8000-000000000012",
+      "name": "Email Digest to Team",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [
+        2120,
+        400
+      ],
+      "parameters": {
+        "fromEmail": "={{ $env.SMTP_USER }}",
+        "toEmail": "={{ $env.DIGEST_EMAIL_LIST }}",
+        "subject": "=📊 ShipWatch Weekly Digest: {{ $json.week_start }} - {{ $json.week_end }}",
+        "emailType": "html",
+        "html": "={{ $json.html_body }}",
+        "options": {}
+      },
+      "credentials": {
+        "smtp": {
+          "id": "smtp-credential-id",
+          "name": "SMTP"
+        }
+      }
+    },
+    {
+      "id": "d5a8f1b0-3001-4000-8000-000000000013",
+      "name": "Store Digest",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        2120,
+        600
+      ],
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $env.SUPABASE_URL + '/rest/v1/weekly_digests' }}",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "apikey",
+              "value": "={{ $env.SUPABASE_ANON_KEY }}"
+            },
+            {
+              "name": "Authorization",
+              "value": "=Bearer {{ $env.SUPABASE_ANON_KEY }}"
+            },
+            {
+              "name": "Prefer",
+              "value": "return=minimal"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ week_start: $json.week_start, week_end: $json.week_end, total_prs: $json.total_prs, total_issues: $json.total_issues, total_commits: $json.total_commits, high_risk_prs: $json.high_risk_prs, p0_p1_bugs: $json.p0_p1_bugs, digest_markdown: $json.digest_markdown }) }}",
+        "options": {}
+      }
+    },
+    {
+      "id": "d5a8f1b0-3001-4000-8000-000000000014",
+      "name": "Error Trigger",
+      "type": "n8n-nodes-base.errorTrigger",
+      "typeVersion": 1,
+      "position": [
+        240,
+        600
+      ],
+      "parameters": {}
+    },
+    {
+      "id": "d5a8f1b0-3001-4000-8000-000000000015",
+      "name": "Build Error Message",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        460,
+        600
+      ],
+      "parameters": {
+        "jsCode": "const error = $input.all()[0].json;\nconst msg = error.execution?.error?.message ?? \"Unknown error\";\nconst executionId = error.execution?.id ?? \"N/A\";\nreturn [{\n  json: {\n    text: \"⚠️ *ShipWatch: Weekly digest generation failed*\\nExecution: \" + executionId + \"\\nError: \" + msg\n  }\n}];",
+        "mode": "runOnceForAllItems"
+      }
+    },
+    {
+      "id": "d5a8f1b0-3001-4000-8000-000000000016",
+      "name": "Send Error Alert",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        680,
+        600
+      ],
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $env.SLACK_WEBHOOK_ENGINEERING }}",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ text: $json.text }) }}",
+        "options": {}
+      }
+    }
+  ],
+  "connections": {
+    "Weekly Monday Trigger": {
+      "main": [
+        [
+          {
+            "node": "Fetch Week's PRs",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Fetch Week's Issues",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Fetch Stored Analyses",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Fetch Week's PRs": {
+      "main": [
+        [
+          {
+            "node": "Merge All Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Fetch Week's Issues": {
+      "main": [
+        [
+          {
+            "node": "Merge All Data",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Merge All Data": {
+      "main": [
+        [
+          {
+            "node": "Merge With Analyses",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Fetch Stored Analyses": {
+      "main": [
+        [
+          {
+            "node": "Merge With Analyses",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Merge With Analyses": {
+      "main": [
+        [
+          {
+            "node": "Aggregate Digest Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Aggregate Digest Data": {
+      "main": [
+        [
+          {
+            "node": "Generate AI Summary",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Merge AI + Stats",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Generate AI Summary": {
+      "main": [
+        [
+          {
+            "node": "Merge AI + Stats",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge AI + Stats": {
+      "main": [
+        [
+          {
+            "node": "Format Digest",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Format Digest": {
+      "main": [
+        [
+          {
+            "node": "Post Digest to #engineering",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Email Digest to Team",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Store Digest",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Error Trigger": {
+      "main": [
+        [
+          {
+            "node": "Build Error Message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Build Error Message": {
+      "main": [
+        [
+          {
+            "node": "Send Error Alert",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  }
+}

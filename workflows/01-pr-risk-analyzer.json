@@ -1,0 +1,397 @@
+{
+  "name": "ShipWatch: PR Risk Analyzer",
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "tags": [],
+  "nodes": [
+    {
+      "id": "d5a8f1b0-1001-4000-8000-000000000001",
+      "name": "PR Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        240,
+        300
+      ],
+      "webhookId": "shipwatch-pr-webhook",
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "pr-webhook",
+        "responseMode": "lastNode",
+        "options": {}
+      }
+    },
+    {
+      "id": "d5a8f1b0-1001-4000-8000-000000000002",
+      "name": "Filter PR Action",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        460,
+        300
+      ],
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "cond-opened",
+              "leftValue": "={{ $json.body.action }}",
+              "rightValue": "opened",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            },
+            {
+              "id": "cond-synchronize",
+              "leftValue": "={{ $json.body.action }}",
+              "rightValue": "synchronize",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "or"
+        },
+        "options": {}
+      }
+    },
+    {
+      "id": "d5a8f1b0-1001-4000-8000-000000000003",
+      "name": "Fetch PR Diff",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        680,
+        300
+      ],
+      "parameters": {
+        "jsCode": "// pr-diff-fetcher.js\r\n// N8N Code node — Phase 1: PR Risk Analyzer\r\n// Receives a GitHub webhook payload and fetches the full PR diff via the GitHub API.\r\n// Returns PR metadata + truncated diff text for downstream AI analysis.\r\n\r\nconst MAX_DIFF_CHARS = 12000;\r\n\r\n// ── 1. Extract PR metadata from the webhook payload ──────────────────────────\r\nconst payload = $input.all()[0].json.body;\r\nconst pr = payload.pull_request;\r\nconst repo = payload.repository.full_name; // e.g. \"owner/repo\"\r\n\r\nconst prMeta = {\r\n  pr_number: pr.number,\r\n  pr_title: pr.title,\r\n  pr_author: pr.user.login,\r\n  pr_url: pr.html_url,\r\n  repo_full_name: repo,\r\n  additions: pr.additions,\r\n  deletions: pr.deletions,\r\n  changed_files: pr.changed_files,\r\n};\r\n\r\n// ── 2. Fetch the list of files changed in this PR ────────────────────────────\r\nlet filesData = [];\r\n\r\ntry {\r\n  const url = `https://api.github.com/repos/${repo}/pulls/${pr.number}/files`;\r\n\r\n  const response = await fetch(url, {\r\n    headers: {\r\n      Authorization: `Bearer ${$env.GITHUB_TOKEN}`,\r\n      Accept: \"application/vnd.github.v3+json\",\r\n    },\r\n  });\r\n\r\n  if (!response.ok) {\r\n    throw new Error(\r\n      `GitHub API responded ${response.status}: ${response.statusText}`,\r\n    );\r\n  }\r\n\r\n  filesData = await response.json();\r\n} catch (err) {\r\n  // If the diff fetch fails, return metadata with a placeholder and log the error\r\n  console.error(\"Failed to fetch PR diff:\", err.message);\r\n\r\n  return [\r\n    {\r\n      json: {\r\n        ...prMeta,\r\n        diff_text: \"Diff unavailable\",\r\n        files_list: [],\r\n      },\r\n    },\r\n  ];\r\n}\r\n\r\n// ── 3. Build per-file summaries and a combined diff string ───────────────────\r\nconst filesList = [];\r\nlet combinedDiff = \"\";\r\n\r\nfor (const file of filesData) {\r\n  filesList.push(file.filename);\r\n\r\n  // Each file section: header line + patch (the actual diff hunks)\r\n  const section = [\r\n    `--- ${file.filename} (${file.status}) +${file.additions} -${file.deletions}`,\r\n    file.patch || \"(binary or empty)\",\r\n    \"\", // blank line separator\r\n  ].join(\"\\n\");\r\n\r\n  combinedDiff += section;\r\n}\r\n\r\n// ── 4. Truncate the combined diff to fit within the AI context budget ────────\r\nlet diffText = combinedDiff;\r\nif (diffText.length > MAX_DIFF_CHARS) {\r\n  diffText = diffText.slice(0, MAX_DIFF_CHARS) + \"\\n... [diff truncated]\";\r\n}\r\n\r\n// ── 5. Return a single item with PR metadata + diff ──────────────────────────\r\nreturn [\r\n  {\r\n    json: {\r\n      ...prMeta,\r\n      diff_text: diffText,\r\n      files_list: filesList,\r\n    },\r\n  },\r\n];\r\n",
+        "mode": "runOnceForAllItems"
+      }
+    },
+    {
+      "id": "d5a8f1b0-1001-4000-8000-000000000004",
+      "name": "Build Classification Prompt",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        900,
+        300
+      ],
+      "parameters": {
+        "jsCode": "// risk-prompt-builder.js\r\n// N8N Code node — Phase 1: PR Risk Analyzer\r\n// Builds structured system + user prompts for AI-based PR risk classification.\r\n// Receives the output of pr-diff-fetcher.js and passes everything downstream.\r\n\r\n// ── 1. Grab diff-fetcher output ──────────────────────────────────────────────\r\nconst input = $input.all()[0].json;\r\n\r\n// ── 2. System instruction ────────────────────────────────────────────────────\r\nconst system_prompt =\r\n  \"You are a senior software engineer reviewing pull requests. \" +\r\n  \"Classify the risk level and provide a brief summary. \" +\r\n  \"Respond ONLY with valid JSON, no markdown fences.\";\r\n\r\n// ── 3. Build the user message ────────────────────────────────────────────────\r\nconst user_prompt = `## Pull Request for Review\r\n\r\n**Title:** ${input.pr_title}\r\n**Author:** ${input.pr_author}\r\n**Files changed:** ${input.changed_files}\r\n**Lines added:** ${input.additions}\r\n**Lines removed:** ${input.deletions}\r\n\r\n### Files Changed\r\n${input.files_list.map((f) => `- ${f}`).join(\"\\n\")}\r\n\r\n### Diff\r\n\\`\\`\\`\r\n${input.diff_text}\r\n\\`\\`\\`\r\n\r\n## Classification Task\r\n\r\nClassify this PR into exactly one risk level using these criteria:\r\n\r\n- **low** — documentation, tests, config tweaks, typo fixes\r\n- **medium** — new features with tests, refactors of non-critical paths\r\n- **high** — changes to auth, payments, database schemas, core business logic, or PRs with no tests\r\n- **critical** — security-related changes, breaking API changes, infrastructure / deployment changes\r\n\r\nRespond with **only** a JSON object (no markdown, no extra text) containing exactly these fields:\r\n\r\n{\r\n  \"risk_level\": \"low|medium|high|critical\",\r\n  \"summary\": \"2-3 sentence summary of what this PR does and why it has this risk level\",\r\n  \"key_concerns\": [\"array of specific concerns if medium/high/critical, empty array for low\"],\r\n  \"suggested_reviewers\": [\"areas of expertise needed, e.g. 'database', 'security', 'frontend'\"]\r\n}`;\r\n\r\n// ── 4. Pass through PR metadata so downstream nodes can store it ─────────────\r\nconst pr_metadata = {\r\n  pr_number: input.pr_number,\r\n  pr_title: input.pr_title,\r\n  pr_author: input.pr_author,\r\n  pr_url: input.pr_url,\r\n  repo_full_name: input.repo_full_name,\r\n  additions: input.additions,\r\n  deletions: input.deletions,\r\n  changed_files: input.changed_files,\r\n  diff_text: input.diff_text,\r\n  files_list: input.files_list,\r\n};\r\n\r\n// ── 5. Return single item ────────────────────────────────────────────────────\r\nreturn [\r\n  {\r\n    json: {\r\n      system_prompt,\r\n      user_prompt,\r\n      pr_metadata,\r\n    },\r\n  },\r\n];\r\n",
+        "mode": "runOnceForAllItems"
+      }
+    },
+    {
+      "id": "d5a8f1b0-1001-4000-8000-000000000005",
+      "name": "Call AI API",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1120,
+        300
+      ],
+      "notes": "ANTHROPIC (active):\n  POST https://api.anthropic.com/v1/messages\n  x-api-key: $env.ANTHROPIC_API_KEY\n  model: claude-sonnet-4-20250514\n\nOPENAI alternative:\n  POST https://api.openai.com/v1/chat/completions\n  Authorization: Bearer $env.OPENAI_API_KEY\n  model: gpt-4o-mini\n  Change jsonBody to use {role:'system'} + {role:'user'} messages array.",
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.anthropic.com/v1/messages",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "x-api-key",
+              "value": "={{ $env.ANTHROPIC_API_KEY }}"
+            },
+            {
+              "name": "anthropic-version",
+              "value": "2023-06-01"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ model: 'claude-sonnet-4-20250514', max_tokens: 1024, messages: [{ role: 'user', content: $json.system_prompt + '\\n\\n' + $json.user_prompt }] }) }}",
+        "options": {}
+      }
+    },
+    {
+      "id": "d5a8f1b0-1001-4000-8000-000000000006",
+      "name": "Merge AI + Metadata",
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3,
+      "position": [
+        1340,
+        300
+      ],
+      "parameters": {
+        "mode": "combine",
+        "combinationMode": "mergeByPosition",
+        "options": {}
+      }
+    },
+    {
+      "id": "d5a8f1b0-1001-4000-8000-000000000007",
+      "name": "Format Slack Message",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1560,
+        300
+      ],
+      "parameters": {
+        "jsCode": "// Format Slack Message — workflow context\n// Input arrives from Merge node: Anthropic API response fields + prompt builder fields combined\n\nconst input = $input.all()[0].json;\nconst meta = input.pr_metadata;\n\n// Extract AI text from Anthropic response format\nlet aiText = \"\";\ntry {\n  aiText = input.content[0].text;\n} catch (e) {\n  // content may be missing if API call structure differs\n}\n\n// Parse AI response (tolerant of markdown fences)\nlet classification;\ntry {\n  let raw = aiText;\n  raw = raw.replace(/```(?:json)?\\s*/gi, \"\").replace(/```/g, \"\").trim();\n  classification = JSON.parse(raw);\n} catch (err) {\n  console.error(\"Failed to parse AI response:\", err.message);\n  return [{\n    json: {\n      slack_blocks: [\n        { type: \"header\", text: { type: \"plain_text\", text: \"⚠️ PR #\" + meta.pr_number + \": Classification Failed\", emoji: true } },\n        { type: \"section\", text: { type: \"mrkdwn\", text: \"Automatic classification failed — *manual review needed*.\" } },\n        { type: \"actions\", elements: [{ type: \"button\", text: { type: \"plain_text\", text: \"View PR\", emoji: true }, url: meta.pr_url, style: \"danger\" }] }\n      ],\n      slack_text: \"⚠️ PR #\" + meta.pr_number + \" (\" + meta.pr_title + \") — classification failed, manual review needed: \" + meta.pr_url,\n      risk_level: \"unknown\",\n      pr_number: meta.pr_number, pr_title: meta.pr_title, pr_author: meta.pr_author,\n      pr_url: meta.pr_url, repo_full_name: meta.repo_full_name,\n      additions: meta.additions, deletions: meta.deletions, changed_files: meta.changed_files\n    }\n  }];\n}\n\nconst riskMap = {\n  low:      { emoji: \"🟢\", color: \"#36a64f\" },\n  medium:   { emoji: \"🟡\", color: \"#daa520\" },\n  high:     { emoji: \"🟠\", color: \"#ff8c00\" },\n  critical: { emoji: \"🔴\", color: \"#dc3545\" }\n};\n\nconst level = classification.risk_level ?? \"medium\";\nconst { emoji, color } = riskMap[level] ?? riskMap.medium;\n\nconst blocks = [];\n\nblocks.push({ type: \"header\", text: { type: \"plain_text\", text: emoji + \" PR #\" + meta.pr_number + \": \" + meta.pr_title, emoji: true } });\nblocks.push({ type: \"section\", text: { type: \"mrkdwn\", text: classification.summary } });\nblocks.push({ type: \"section\", fields: [\n  { type: \"mrkdwn\", text: \"*Author:*\\n\" + meta.pr_author },\n  { type: \"mrkdwn\", text: \"*Risk Level:*\\n\" + emoji + \" \" + level.toUpperCase() },\n  { type: \"mrkdwn\", text: \"*Files Changed:*\\n\" + meta.changed_files },\n  { type: \"mrkdwn\", text: \"*Lines:*\\n+\" + meta.additions + \" / -\" + meta.deletions }\n] });\n\nconst concerns = classification.key_concerns ?? [];\nif (concerns.length > 0) {\n  blocks.push({ type: \"section\", text: { type: \"mrkdwn\", text: \"*Key Concerns:*\\n\" + concerns.map(function(c) { return \"• \" + c; }).join(\"\\n\") } });\n}\n\nconst reviewers = classification.suggested_reviewers ?? [];\nif (reviewers.length > 0) {\n  blocks.push({ type: \"context\", elements: [{ type: \"mrkdwn\", text: \"👀 *Suggested expertise:* \" + reviewers.join(\", \") }] });\n}\n\nblocks.push({ type: \"divider\" });\nblocks.push({ type: \"actions\", elements: [{\n  type: \"button\",\n  text: { type: \"plain_text\", text: \"View PR\", emoji: true },\n  url: meta.pr_url,\n  style: (level === \"critical\" || level === \"high\") ? \"danger\" : \"primary\"\n}] });\n\nconst slack_text = emoji + \" PR #\" + meta.pr_number + \" (\" + meta.pr_title + \") — Risk: \" + level.toUpperCase() + \" — \" + meta.pr_url;\n\nreturn [{\n  json: {\n    slack_blocks: blocks,\n    slack_text: slack_text,\n    slack_color: color,\n    risk_level: level,\n    risk_summary: classification.summary,\n    key_concerns: concerns,\n    suggested_reviewers: reviewers,\n    raw_ai_response: classification,\n    pr_number: meta.pr_number,\n    pr_title: meta.pr_title,\n    pr_author: meta.pr_author,\n    pr_url: meta.pr_url,\n    repo_full_name: meta.repo_full_name,\n    additions: meta.additions,\n    deletions: meta.deletions,\n    changed_files: meta.changed_files,\n    ai_model_used: input.model ?? \"unknown\"\n  }\n}];",
+        "mode": "runOnceForAllItems"
+      }
+    },
+    {
+      "id": "d5a8f1b0-1001-4000-8000-000000000008",
+      "name": "Send Risk Alert",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1780,
+        300
+      ],
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $env.SLACK_WEBHOOK_URL }}",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ blocks: $json.slack_blocks, text: $json.slack_text }) }}",
+        "options": {}
+      }
+    },
+    {
+      "id": "d5a8f1b0-1001-4000-8000-000000000009",
+      "name": "Store Analysis",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        2000,
+        300
+      ],
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $env.SUPABASE_URL + '/rest/v1/pr_analyses' }}",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "apikey",
+              "value": "={{ $env.SUPABASE_ANON_KEY }}"
+            },
+            {
+              "name": "Authorization",
+              "value": "=Bearer {{ $env.SUPABASE_ANON_KEY }}"
+            },
+            {
+              "name": "Prefer",
+              "value": "return=minimal"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ github_pr_number: $json.pr_number, github_repo: $json.repo_full_name, pr_title: $json.pr_title, pr_author: $json.pr_author, risk_level: $json.risk_level, risk_summary: $json.risk_summary, files_changed: $json.changed_files, lines_added: $json.additions, lines_removed: $json.deletions, ai_model_used: $json.ai_model_used, raw_ai_response: $json.raw_ai_response }) }}",
+        "options": {}
+      }
+    },
+    {
+      "id": "d5a8f1b0-1001-4000-8000-00000000000a",
+      "name": "Respond to Webhook",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [
+        2220,
+        300
+      ],
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={\"status\": \"analyzed\"}",
+        "options": {}
+      }
+    },
+    {
+      "id": "d5a8f1b0-1001-4000-8000-00000000000b",
+      "name": "Error Trigger",
+      "type": "n8n-nodes-base.errorTrigger",
+      "typeVersion": 1,
+      "position": [
+        240,
+        560
+      ],
+      "parameters": {}
+    },
+    {
+      "id": "d5a8f1b0-1001-4000-8000-00000000000c",
+      "name": "Build Error Message",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        460,
+        560
+      ],
+      "parameters": {
+        "jsCode": "// Error notification for Slack\nconst error = $input.all()[0].json;\nconst msg = error.execution?.error?.message ?? \"Unknown error\";\nconst executionId = error.execution?.id ?? \"N/A\";\n\nreturn [{\n  json: {\n    text: \"⚠️ *ShipWatch: PR analysis failed*\\nExecution: \" + executionId + \"\\nError: \" + msg\n  }\n}];",
+        "mode": "runOnceForAllItems"
+      }
+    },
+    {
+      "id": "d5a8f1b0-1001-4000-8000-00000000000d",
+      "name": "Send Error Alert",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        680,
+        560
+      ],
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $env.SLACK_WEBHOOK_URL }}",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ text: $json.text }) }}",
+        "options": {}
+      }
+    }
+  ],
+  "connections": {
+    "PR Webhook": {
+      "main": [
+        [
+          {
+            "node": "Filter PR Action",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filter PR Action": {
+      "main": [
+        [
+          {
+            "node": "Fetch PR Diff",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        []
+      ]
+    },
+    "Fetch PR Diff": {
+      "main": [
+        [
+          {
+            "node": "Build Classification Prompt",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Build Classification Prompt": {
+      "main": [
+        [
+          {
+            "node": "Call AI API",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Merge AI + Metadata",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Call AI API": {
+      "main": [
+        [
+          {
+            "node": "Merge AI + Metadata",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge AI + Metadata": {
+      "main": [
+        [
+          {
+            "node": "Format Slack Message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Format Slack Message": {
+      "main": [
+        [
+          {
+            "node": "Send Risk Alert",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send Risk Alert": {
+      "main": [
+        [
+          {
+            "node": "Store Analysis",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Store Analysis": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Error Trigger": {
+      "main": [
+        [
+          {
+            "node": "Build Error Message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Build Error Message": {
+      "main": [
+        [
+          {
+            "node": "Send Error Alert",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  }
+}
