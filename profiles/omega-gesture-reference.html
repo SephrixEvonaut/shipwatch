@@ -1,0 +1,998 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Omega Gesture Reference — SWTOR Vengeance Juggernaut</title>
+    <style>
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+      body {
+        font-family: "Segoe UI", system-ui, sans-serif;
+        background: #0e0e12;
+        color: #e2e2e8;
+        padding: 32px;
+        font-size: 13px;
+      }
+      h1 {
+        text-align: center;
+        font-size: 22px;
+        font-weight: 700;
+        color: #f0c040;
+        letter-spacing: 1px;
+        margin-bottom: 4px;
+      }
+      .subtitle {
+        text-align: center;
+        color: #888;
+        font-size: 11px;
+        margin-bottom: 28px;
+        letter-spacing: 0.5px;
+      }
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 14px;
+      }
+      .wide {
+        grid-column: span 2;
+      }
+      .fullwide {
+        grid-column: span 3;
+      }
+      .card {
+        background: #16161e;
+        border: 1px solid #2a2a38;
+        border-radius: 8px;
+        overflow: hidden;
+      }
+      .card-header {
+        background: #1e1e2e;
+        padding: 8px 12px;
+        font-weight: 700;
+        font-size: 12px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        border-bottom: 1px solid #2a2a38;
+      }
+      .key-badge {
+        background: #f0c040;
+        color: #0e0e12;
+        font-weight: 800;
+        font-size: 11px;
+        padding: 2px 7px;
+        border-radius: 4px;
+        font-family: monospace;
+        min-width: 24px;
+        text-align: center;
+      }
+      .key-badge.blue {
+        background: #5588ff;
+        color: #fff;
+      }
+      .key-badge.green {
+        background: #44cc88;
+        color: #0e0e12;
+      }
+      .key-badge.red {
+        background: #dd4455;
+        color: #fff;
+      }
+      .key-badge.purple {
+        background: #aa66ff;
+        color: #fff;
+      }
+      .key-badge.orange {
+        background: #ff8844;
+        color: #0e0e12;
+      }
+      .key-badge.teal {
+        background: #44bbcc;
+        color: #0e0e12;
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+      }
+      td,
+      th {
+        padding: 5px 12px;
+        text-align: left;
+        font-size: 12px;
+        border-bottom: 1px solid #1e1e2e;
+      }
+      th {
+        background: #1a1a28;
+        color: #888;
+        font-weight: 600;
+        font-size: 10px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+      }
+      td:first-child {
+        color: #aaa;
+        font-size: 11px;
+        white-space: nowrap;
+      }
+      td:nth-child(2) {
+        color: #e2e2e8;
+        font-weight: 500;
+      }
+      td:last-child {
+        font-family: monospace;
+        color: #f0c040;
+        font-size: 11px;
+      }
+      tr:last-child td {
+        border-bottom: none;
+      }
+      tr:hover td {
+        background: #1c1c2a;
+      }
+      .gesture-quick {
+        color: #44cc88;
+      }
+      .gesture-long {
+        color: #ff8844;
+      }
+      .gesture-toggle {
+        color: #5588ff;
+      }
+      .gesture-special {
+        color: #aa66ff;
+      }
+      .removed {
+        color: #555;
+        text-decoration: line-through;
+        font-style: italic;
+      }
+      .tts-note {
+        color: #888;
+        font-size: 10px;
+        font-style: italic;
+      }
+      .section-divider {
+        grid-column: span 3;
+        text-align: center;
+        font-size: 10px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        color: #444;
+        padding: 8px 0 2px;
+        border-top: 1px solid #2a2a38;
+        margin-top: 4px;
+      }
+      .footer-note {
+        grid-column: span 3;
+        text-align: center;
+        color: #555;
+        font-size: 10px;
+        padding-top: 16px;
+        border-top: 1px solid #2a2a38;
+        margin-top: 8px;
+      }
+      kbd {
+        background: #2a2a38;
+        border: 1px solid #3a3a4a;
+        border-radius: 3px;
+        padding: 1px 5px;
+        font-family: monospace;
+        font-size: 11px;
+        color: #f0c040;
+      }
+      .echo {
+        color: #5588ff;
+        font-size: 10px;
+      }
+      @media print {
+        body {
+          background: #fff;
+          color: #000;
+          padding: 16px;
+        }
+        .card {
+          border-color: #ccc;
+          break-inside: avoid;
+        }
+        .card-header {
+          background: #f0f0f0;
+        }
+        th {
+          background: #eee;
+          color: #333;
+        }
+        tr:hover td {
+          background: none;
+        }
+        h1 {
+          color: #c08000;
+        }
+        kbd {
+          background: #eee;
+          border-color: #bbb;
+          color: #800;
+        }
+        td:last-child {
+          color: #800;
+        }
+        .key-badge {
+          print-color-adjust: exact;
+          -webkit-print-color-adjust: exact;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <h1>⚔️ OMEGA GESTURE REFERENCE</h1>
+    <div class="subtitle">
+      SWTOR Vengeance Juggernaut · Azeron Keypad + Venus Mouse · Teensy 4.0 HID
+      Output · Last verified 2026-02-22
+    </div>
+
+    <div class="grid">
+      <!-- ====== NUMBER KEYS ROW ====== -->
+      <div class="section-divider">Number Keys</div>
+
+      <!-- Key 1 -->
+      <div class="card">
+        <div class="card-header"><span class="key-badge">1</span> Numbers</div>
+        <table>
+          <tr>
+            <th>Gesture</th>
+            <th>Ability</th>
+            <th>Output</th>
+          </tr>
+          <tr>
+            <td class="gesture-quick">quick</td>
+            <td>Crushing Blow</td>
+            <td><kbd>N</kbd> <span class="echo">×2</span></td>
+          </tr>
+          <tr>
+            <td class="gesture-long">long</td>
+            <td>Center Target + Cog</td>
+            <td><kbd>SHIFT+O</kbd> → <kbd>ALT+F9</kbd></td>
+          </tr>
+          <tr>
+            <td class="gesture-toggle">quick_toggle</td>
+            <td>Crushing Blow (toggled)</td>
+            <td><kbd>N</kbd> <span class="echo">×2</span></td>
+          </tr>
+          <tr>
+            <td class="gesture-toggle">long_toggle</td>
+            <td>Center Target + Cog</td>
+            <td><kbd>SHIFT+O</kbd> → <kbd>ALT+F9</kbd></td>
+          </tr>
+        </table>
+      </div>
+
+      <!-- Key 2 -->
+      <div class="card">
+        <div class="card-header"><span class="key-badge">2</span></div>
+        <table>
+          <tr>
+            <th>Gesture</th>
+            <th>Ability</th>
+            <th>Output</th>
+          </tr>
+          <tr>
+            <td class="gesture-quick">quick</td>
+            <td>Force Scream</td>
+            <td><kbd>O</kbd> <span class="echo">×2</span></td>
+          </tr>
+        </table>
+      </div>
+
+      <!-- Key 3 -->
+      <div class="card">
+        <div class="card-header"><span class="key-badge">3</span></div>
+        <table>
+          <tr>
+            <th>Gesture</th>
+            <th>Ability</th>
+            <th>Output</th>
+          </tr>
+          <tr>
+            <td class="gesture-quick">quick</td>
+            <td>Aegis Assault</td>
+            <td><kbd>Z</kbd> <span class="echo">×2</span></td>
+          </tr>
+          <tr>
+            <td class="gesture-long">long</td>
+            <td>Vicious Slash</td>
+            <td><kbd>ALT+[</kbd></td>
+          </tr>
+          <tr>
+            <td class="gesture-toggle">quick_toggle</td>
+            <td>Sweeping Slash</td>
+            <td><kbd>SHIFT+J</kbd> <span class="echo">×2</span></td>
+          </tr>
+        </table>
+      </div>
+
+      <!-- Key 4 -->
+      <div class="card">
+        <div class="card-header"><span class="key-badge">4</span></div>
+        <table>
+          <tr>
+            <th>Gesture</th>
+            <th>Ability</th>
+            <th>Output</th>
+          </tr>
+          <tr>
+            <td class="gesture-quick">quick</td>
+            <td>Interrupt</td>
+            <td><kbd>K</kbd> <span class="echo">×2</span></td>
+          </tr>
+          <tr>
+            <td class="gesture-long">long</td>
+            <td>Close Enemy + Cog + Interrupt</td>
+            <td><kbd>8</kbd> → <kbd>ALT+F9</kbd> → <kbd>K</kbd></td>
+          </tr>
+          <tr>
+            <td class="gesture-toggle">quick_toggle</td>
+            <td>Force Choke</td>
+            <td><kbd>DELETE</kbd></td>
+          </tr>
+          <tr>
+            <td class="gesture-toggle">long_toggle</td>
+            <td>Electro Stun Grenade</td>
+            <td><kbd>ALT+-</kbd></td>
+          </tr>
+          <tr>
+            <td class="gesture-special">combo_7_4</td>
+            <td>Close Enemy + Interrupt</td>
+            <td><kbd>8</kbd> → <kbd>K</kbd></td>
+          </tr>
+        </table>
+      </div>
+
+      <!-- Key 5 -->
+      <div class="card">
+        <div class="card-header"><span class="key-badge">5</span></div>
+        <table>
+          <tr>
+            <th>Gesture</th>
+            <th>Ability</th>
+            <th>Output</th>
+          </tr>
+          <tr>
+            <td class="gesture-quick">quick</td>
+            <td>Vicious Throw</td>
+            <td><kbd>[</kbd> <span class="echo">×2</span></td>
+          </tr>
+          <tr>
+            <td class="gesture-long">long</td>
+            <td>Basic Attack</td>
+            <td><kbd>X</kbd> <span class="echo">×2</span></td>
+          </tr>
+          <tr>
+            <td class="gesture-toggle">quick_toggle</td>
+            <td>Backhand</td>
+            <td><kbd>BACKSPACE</kbd></td>
+          </tr>
+          <tr>
+            <td class="gesture-toggle">long_toggle</td>
+            <td>Seismic Grenade</td>
+            <td><kbd>ALT+/</kbd></td>
+          </tr>
+          <tr>
+            <td class="gesture-special">quick_q_toggle</td>
+            <td>Smash</td>
+            <td><kbd>]</kbd> <span class="echo">×2</span></td>
+          </tr>
+          <tr>
+            <td class="gesture-special">quick_s_toggle</td>
+            <td>Target of Target + Cog</td>
+            <td><kbd>M</kbd> → <kbd>ALT+F9</kbd></td>
+          </tr>
+        </table>
+      </div>
+
+      <!-- Key 6 -->
+      <div class="card">
+        <div class="card-header"><span class="key-badge">6</span></div>
+        <table>
+          <tr>
+            <th>Gesture</th>
+            <th>Ability</th>
+            <th>Output</th>
+          </tr>
+          <tr>
+            <td class="gesture-quick">quick</td>
+            <td>Ravage</td>
+            <td><kbd>SHIFT+K</kbd> <span class="echo">×4</span></td>
+          </tr>
+          <tr>
+            <td class="gesture-toggle">quick_toggle</td>
+            <td>Force Push</td>
+            <td><kbd>ALT+L</kbd> <span class="echo">×2</span></td>
+          </tr>
+          <tr>
+            <td class="gesture-special">quick_f2</td>
+            <td>Basic Attack</td>
+            <td><kbd>X</kbd> <span class="echo">×2</span></td>
+          </tr>
+          <tr>
+            <td class="gesture-special">quick_q_toggle</td>
+            <td>Seismic Grenade</td>
+            <td><kbd>ALT+/</kbd></td>
+          </tr>
+          <tr>
+            <td class="gesture-special">quick_s_toggle</td>
+            <td>Focus ToT + Cog</td>
+            <td><kbd>J</kbd> → <kbd>ALT+F9</kbd></td>
+          </tr>
+        </table>
+      </div>
+
+      <!-- ====== LETTER KEYS ROW ====== -->
+      <div class="section-divider">Letter Keys</div>
+
+      <!-- W -->
+      <div class="card">
+        <div class="card-header">
+          <span class="key-badge blue">W</span> Toggle Activator · 185ms
+          threshold
+        </div>
+        <table>
+          <tr>
+            <th>Gesture</th>
+            <th>Ability</th>
+            <th>Output</th>
+          </tr>
+          <tr>
+            <td class="gesture-quick">quick (&lt;185ms)</td>
+            <td>Close Enemy + Cog</td>
+            <td><kbd>8</kbd> → <kbd>ALT+F9</kbd></td>
+          </tr>
+          <tr>
+            <td class="gesture-long">hold ≥185ms</td>
+            <td>Toggle ON only</td>
+            <td><span class="tts-note">no key output</span></td>
+          </tr>
+          <tr>
+            <td class="gesture-toggle">quick_toggle (&lt;185ms)</td>
+            <td>Next Friend + Cog</td>
+            <td><kbd>.</kbd> → <kbd>ALT+F9</kbd></td>
+          </tr>
+        </table>
+      </div>
+
+      <!-- Y -->
+      <div class="card">
+        <div class="card-header">
+          <span class="key-badge blue">Y</span> Toggle Activator · 233ms
+          threshold
+        </div>
+        <table>
+          <tr>
+            <th>Gesture</th>
+            <th>Ability</th>
+            <th>Output</th>
+          </tr>
+          <tr>
+            <td class="gesture-quick">quick (&lt;233ms)</td>
+            <td>Next Target + Cog</td>
+            <td><kbd>V</kbd> → <kbd>ALT+F9</kbd></td>
+          </tr>
+          <tr>
+            <td class="gesture-long">hold ≥233ms</td>
+            <td>Toggle ON only</td>
+            <td><span class="tts-note">no key output</span></td>
+          </tr>
+          <tr>
+            <td class="gesture-toggle">quick_toggle (&lt;233ms)</td>
+            <td>Close Friend + Cog</td>
+            <td><kbd>'</kbd> → <kbd>ALT+F9</kbd></td>
+          </tr>
+        </table>
+      </div>
+
+      <!-- A -->
+      <div class="card">
+        <div class="card-header">
+          <span class="key-badge">A</span> 241ms threshold
+        </div>
+        <table>
+          <tr>
+            <th>Gesture</th>
+            <th>Ability</th>
+            <th>Output</th>
+          </tr>
+          <tr>
+            <td class="gesture-quick">quick</td>
+            <td>Leap</td>
+            <td><kbd>F9</kbd> <span class="echo">×2</span></td>
+          </tr>
+          <tr>
+            <td class="gesture-toggle">quick_toggle</td>
+            <td>Single Taunt</td>
+            <td><kbd>F6</kbd> <span class="echo">×2</span></td>
+          </tr>
+        </table>
+      </div>
+
+      <!-- S -->
+      <div class="card">
+        <div class="card-header">
+          <span class="key-badge green">S</span> Dual-purpose · 512ms threshold
+        </div>
+        <table>
+          <tr>
+            <th>Gesture</th>
+            <th>Ability</th>
+            <th>Output</th>
+          </tr>
+          <tr>
+            <td class="gesture-quick">quick (&lt;512ms)</td>
+            <td>Guard + Shield</td>
+            <td><kbd>L</kbd> + <kbd>\</kbd> (dual-key)</td>
+          </tr>
+          <tr>
+            <td class="gesture-long">hold ≥512ms</td>
+            <td>Group Member Toggle</td>
+            <td><span class="tts-note">intercepts keys 1–6, T</span></td>
+          </tr>
+        </table>
+      </div>
+
+      <!-- D -->
+      <div class="card">
+        <div class="card-header">
+          <span class="key-badge red">D</span> R-Stream Toggle Mode
+        </div>
+        <table>
+          <tr>
+            <th>Action</th>
+            <th>Behavior</th>
+            <th>TTS</th>
+          </tr>
+          <tr>
+            <td>Press #1</td>
+            <td>R stream ON — <kbd>R</kbd> every 430ms</td>
+            <td>"on on on"</td>
+          </tr>
+          <tr>
+            <td>Press #2</td>
+            <td>R stream OFF</td>
+            <td>"off off off"</td>
+          </tr>
+          <tr>
+            <td
+              colspan="3"
+              style="color: #555; font-size: 10px; font-style: italic"
+            >
+              D press ignored while TTS is speaking (debounce)
+            </td>
+          </tr>
+        </table>
+      </div>
+
+      <!-- T -->
+      <div class="card">
+        <div class="card-header"><span class="key-badge">T</span></div>
+        <table>
+          <tr>
+            <th>Gesture</th>
+            <th>Ability</th>
+            <th>Output</th>
+          </tr>
+          <tr>
+            <td class="gesture-quick">quick</td>
+            <td>Previous Target + Cog</td>
+            <td><kbd>ALT+]</kbd> → <kbd>ALT+F9</kbd></td>
+          </tr>
+          <tr>
+            <td class="gesture-long">long</td>
+            <td>Previous Friend + Cog</td>
+            <td><kbd>ALT+.</kbd> → <kbd>ALT+F9</kbd></td>
+          </tr>
+          <tr>
+            <td class="gesture-toggle">quick_toggle</td>
+            <td>Target of Target + Cog</td>
+            <td><kbd>M</kbd> → <kbd>ALT+F9</kbd></td>
+          </tr>
+          <tr>
+            <td class="gesture-toggle">long_toggle</td>
+            <td>Focus ToT + Cog</td>
+            <td><kbd>J</kbd> → <kbd>ALT+F9</kbd></td>
+          </tr>
+        </table>
+      </div>
+
+      <!-- U -->
+      <div class="card">
+        <div class="card-header"><span class="key-badge">U</span></div>
+        <table>
+          <tr>
+            <th>Gesture</th>
+            <th>Ability</th>
+            <th>Output</th>
+          </tr>
+          <tr>
+            <td class="gesture-quick">quick</td>
+            <td>Enraged Defense</td>
+            <td><kbd>SHIFT+.</kbd></td>
+          </tr>
+          <tr>
+            <td class="gesture-toggle">quick_toggle</td>
+            <td>Saber Ward</td>
+            <td><kbd>,</kbd></td>
+          </tr>
+        </table>
+      </div>
+
+      <!-- I -->
+      <div class="card">
+        <div class="card-header"><span class="key-badge">I</span></div>
+        <table>
+          <tr>
+            <th>Gesture</th>
+            <th>Ability</th>
+            <th>Output</th>
+          </tr>
+          <tr>
+            <td class="gesture-quick">quick</td>
+            <td>Relic</td>
+            <td><kbd>SHIFT+X</kbd></td>
+          </tr>
+          <tr>
+            <td class="gesture-toggle">quick_toggle</td>
+            <td>Focus Mod + Single Taunt</td>
+            <td>
+              <kbd>7</kbd><span class="tts-note">(hold)</span> → <kbd>F6</kbd>
+            </td>
+          </tr>
+          <tr>
+            <td class="gesture-toggle">long_toggle</td>
+            <td>Mass Taunt Combo</td>
+            <td>
+              <kbd>F7</kbd
+              >→<kbd>7</kbd>→<kbd>F6</kbd>→<kbd>F7</kbd>→<kbd>F7</kbd>→<kbd
+                >F8</kbd
+              >
+            </td>
+          </tr>
+        </table>
+      </div>
+
+      <!-- H -->
+      <div class="card">
+        <div class="card-header">
+          <span class="key-badge">H</span> Intercede
+        </div>
+        <table>
+          <tr>
+            <th>Gesture</th>
+            <th>Ability</th>
+            <th>Output</th>
+          </tr>
+          <tr>
+            <td class="gesture-quick">quick</td>
+            <td>Focus Mod + Single Taunt</td>
+            <td>
+              <kbd>7</kbd><span class="tts-note">(hold)</span> → <kbd>F6</kbd>
+            </td>
+          </tr>
+        </table>
+      </div>
+
+      <!-- C -->
+      <div class="card">
+        <div class="card-header">
+          <span class="key-badge purple">C</span> Double-tap detection
+        </div>
+        <table>
+          <tr>
+            <th>Gesture</th>
+            <th>Timer / Ability</th>
+            <th>Output</th>
+          </tr>
+          <tr>
+            <td class="gesture-quick">quick</td>
+            <td>Burst Timer — 13s</td>
+            <td><span class="tts-note">TTS "burst"</span></td>
+          </tr>
+          <tr>
+            <td class="gesture-long">long</td>
+            <td>Laze Timer — 31s</td>
+            <td><span class="tts-note">TTS "laze"</span></td>
+          </tr>
+          <tr>
+            <td class="gesture-toggle">quick_toggle</td>
+            <td>Yield Timer — 45s</td>
+            <td><span class="tts-note">TTS "yield"</span></td>
+          </tr>
+          <tr>
+            <td class="gesture-toggle">long_toggle</td>
+            <td>Fuel Timer — 103s</td>
+            <td><span class="tts-note">TTS "fuel"</span></td>
+          </tr>
+          <tr>
+            <td class="gesture-special">double-tap</td>
+            <td>Escape</td>
+            <td><kbd>ESCAPE</kbd></td>
+          </tr>
+        </table>
+      </div>
+
+      <!-- ====== SPECIAL KEYS ROW ====== -->
+      <div class="section-divider">Special Keys</div>
+
+      <!-- SPACEBAR -->
+      <div class="card">
+        <div class="card-header">
+          <span class="key-badge orange">SPACE</span> Detect-only (Endure Pain
+          pressed direct in SWTOR)
+        </div>
+        <table>
+          <tr>
+            <th>Gesture</th>
+            <th>Timer</th>
+            <th>Message</th>
+          </tr>
+          <tr>
+            <td class="gesture-quick">quick</td>
+            <td>Drop Timer — 15.5s</td>
+            <td>
+              <span class="tts-note"
+                >TTS "drop drop drop drop" · no keypress sent</span
+              >
+            </td>
+          </tr>
+          <tr>
+            <td class="gesture-long">long</td>
+            <td>Drop Timer — 15.5s</td>
+            <td>
+              <span class="tts-note"
+                >TTS "drop drop drop drop" · no keypress sent</span
+              >
+            </td>
+          </tr>
+        </table>
+      </div>
+
+      <!-- Q toggle -->
+      <div class="card">
+        <div class="card-header">
+          <span class="key-badge teal">Q</span> Q-Toggle Activator · 350ms
+          threshold
+        </div>
+        <table>
+          <tr>
+            <th>Action</th>
+            <th>Effect</th>
+          </tr>
+          <tr>
+            <td>Hold ≥350ms</td>
+            <td>Q toggle ACTIVE → enables quick_q_toggle on keys 5 &amp; 6</td>
+          </tr>
+          <tr>
+            <td>Release</td>
+            <td>Q toggle OFF</td>
+          </tr>
+        </table>
+      </div>
+
+      <!-- MIDDLE_CLICK -->
+      <div class="card">
+        <div class="card-header">
+          <span class="key-badge">🖱</span> MIDDLE_CLICK
+        </div>
+        <table>
+          <tr>
+            <th>Gesture</th>
+            <th>Ability</th>
+            <th>Output</th>
+          </tr>
+          <tr>
+            <td class="gesture-quick">quick</td>
+            <td>Max Zoom In + Scroll Out</td>
+            <td><kbd>CTRL+V</kbd> → scroll↓20</td>
+          </tr>
+          <tr>
+            <td class="gesture-long">long</td>
+            <td>Scroll In</td>
+            <td>scroll↑20 ticks</td>
+          </tr>
+        </table>
+      </div>
+
+      <!-- F2 -->
+      <div class="card">
+        <div class="card-header">
+          <span class="key-badge purple">F2</span> F2 Toggle Override
+        </div>
+        <table>
+          <tr>
+            <th>Action</th>
+            <th>Effect</th>
+          </tr>
+          <tr>
+            <td>Hold &gt;255ms while W-toggle active</td>
+            <td>F2 overrides W toggle → enables quick_f2 on key 6</td>
+          </tr>
+        </table>
+      </div>
+
+      <!-- ====== FULL OUTPUT KEY TABLE ====== -->
+      <div class="section-divider">Output Key → In-Game Ability Reference</div>
+
+      <div class="card fullwide">
+        <table>
+          <tr>
+            <th>Output Key</th>
+            <th>In-Game Ability</th>
+            <th>Triggered By</th>
+            <th>Output Key</th>
+            <th>In-Game Ability</th>
+            <th>Triggered By</th>
+          </tr>
+          <tr>
+            <td><kbd>N</kbd></td>
+            <td>Crushing Blow</td>
+            <td>1 quick/toggle</td>
+            <td><kbd>SHIFT+K</kbd></td>
+            <td>Ravage</td>
+            <td>6 quick</td>
+          </tr>
+          <tr>
+            <td><kbd>O</kbd></td>
+            <td>Force Scream</td>
+            <td>2 quick</td>
+            <td><kbd>ALT+L</kbd></td>
+            <td>Force Push</td>
+            <td>6 toggle</td>
+          </tr>
+          <tr>
+            <td><kbd>Z</kbd></td>
+            <td>Aegis Assault</td>
+            <td>3 quick</td>
+            <td><kbd>F9</kbd></td>
+            <td>Leap</td>
+            <td>A quick</td>
+          </tr>
+          <tr>
+            <td><kbd>ALT+[</kbd></td>
+            <td>Vicious Slash</td>
+            <td>3 long</td>
+            <td><kbd>F6</kbd></td>
+            <td>Single Taunt</td>
+            <td>A toggle, I toggle, H</td>
+          </tr>
+          <tr>
+            <td><kbd>SHIFT+J</kbd></td>
+            <td>Sweeping Slash</td>
+            <td>3 toggle</td>
+            <td><kbd>F7</kbd></td>
+            <td>Mass Taunt</td>
+            <td>I long_toggle</td>
+          </tr>
+          <tr>
+            <td><kbd>K</kbd></td>
+            <td>Interrupt</td>
+            <td>4 quick, combo</td>
+            <td><kbd>F8</kbd></td>
+            <td>Enrage</td>
+            <td>I long_toggle</td>
+          </tr>
+          <tr>
+            <td><kbd>DELETE</kbd></td>
+            <td>Force Choke</td>
+            <td>4 toggle</td>
+            <td><kbd>L</kbd> + <kbd>\</kbd></td>
+            <td>Guard + Shield</td>
+            <td>S quick</td>
+          </tr>
+          <tr>
+            <td><kbd>ALT+-</kbd></td>
+            <td>Electro Stun</td>
+            <td>4 long_toggle</td>
+            <td><kbd>SHIFT+.</kbd></td>
+            <td>Enraged Defense</td>
+            <td>U quick</td>
+          </tr>
+          <tr>
+            <td><kbd>[</kbd></td>
+            <td>Vicious Throw</td>
+            <td>5 quick</td>
+            <td><kbd>,</kbd></td>
+            <td>Saber Ward</td>
+            <td>U toggle</td>
+          </tr>
+          <tr>
+            <td><kbd>X</kbd></td>
+            <td>Basic Attack</td>
+            <td>5 long, 6 f2</td>
+            <td><kbd>SHIFT+X</kbd></td>
+            <td>Relic</td>
+            <td>I quick</td>
+          </tr>
+          <tr>
+            <td><kbd>BACKSPACE</kbd></td>
+            <td>Backhand</td>
+            <td>5 toggle</td>
+            <td><kbd>R</kbd></td>
+            <td>Retaliation (stream)</td>
+            <td>D toggle</td>
+          </tr>
+          <tr>
+            <td><kbd>ALT+/</kbd></td>
+            <td>Seismic Grenade</td>
+            <td>5 long_t, 6 q_tog</td>
+            <td><kbd>8</kbd></td>
+            <td>Close Enemy</td>
+            <td>W quick, 4 long, combo</td>
+          </tr>
+          <tr>
+            <td><kbd>]</kbd></td>
+            <td>Smash</td>
+            <td>5 q_toggle</td>
+            <td><kbd>V</kbd></td>
+            <td>Next Target</td>
+            <td>Y quick</td>
+          </tr>
+          <tr>
+            <td><kbd>ALT+F9</kbd></td>
+            <td>🎯 Cog Icon</td>
+            <td>all targeting seqs</td>
+            <td><kbd>7</kbd></td>
+            <td>Focus Mod (prefix key)</td>
+            <td>I toggle, H quick</td>
+          </tr>
+          <tr>
+            <td><kbd>SHIFT+O</kbd></td>
+            <td>Center Target</td>
+            <td>1 long</td>
+            <td><kbd>M</kbd></td>
+            <td>Target of Target</td>
+            <td>T toggle, 5 s_tog</td>
+          </tr>
+          <tr>
+            <td><kbd>ALT+]</kbd></td>
+            <td>Previous Target</td>
+            <td>T quick</td>
+            <td><kbd>J</kbd></td>
+            <td>Focus ToT</td>
+            <td>T long_t, 6 s_tog</td>
+          </tr>
+          <tr>
+            <td><kbd>ALT+.</kbd></td>
+            <td>Previous Friend</td>
+            <td>T long</td>
+            <td><kbd>.</kbd></td>
+            <td>Next Friend</td>
+            <td>W toggle</td>
+          </tr>
+          <tr>
+            <td><kbd>'</kbd></td>
+            <td>Close Friend</td>
+            <td>Y toggle</td>
+            <td><kbd>CTRL+V</kbd></td>
+            <td>Max Zoom In</td>
+            <td>MIDDLE_CLICK quick</td>
+          </tr>
+        </table>
+      </div>
+
+      <div class="footer-note">
+        Source of truth: <code>omegaMappings.ts</code> · Verified 2026-02-22 ·
+        146/146 binding checks passed · 186/186 unit tests passed
+      </div>
+    </div>
+
+    <script>
+      // Print button
+      const btn = document.createElement("button");
+      btn.textContent = "🖨️ Print / Save as PDF";
+      btn.style.cssText =
+        "position:fixed;top:16px;right:16px;background:#f0c040;color:#0e0e12;border:none;padding:8px 16px;border-radius:6px;font-weight:700;cursor:pointer;font-size:13px;z-index:999;";
+      btn.onclick = () => window.print();
+      document.body.appendChild(btn);
+    </script>
+  </body>
+</html>

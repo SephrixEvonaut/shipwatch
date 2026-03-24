@@ -1,0 +1,673 @@
+{
+  "name": "SWTOR Vengeance Juggernaut - Omega Profile",
+  "description": "Omega 8-gesture system (quick/long/quick_toggle/long_toggle + F2 variants) with special key behaviors",
+  "system": "omega",
+  "version": "2.0.0",
+
+  "gestureSettings": {
+    "multiPressWindow": 355,
+    "debounceDelay": 10,
+    "cancelThreshold": 1500,
+    "checkIntervalMs": 5
+  },
+
+  "keyThresholds": {
+    "1": 312,
+    "2": 488,
+    "3": 355,
+    "4": 298,
+    "5": 470,
+    "6": { "normal": 510, "toggled": 510 },
+    "W": 185,
+    "A": 336,
+    "S": 512,
+    "B": 391,
+    "I": 597,
+    "Y": 233,
+    "U": 558,
+    "T": 238,
+    "C": 349,
+    "H": 452,
+    "MIDDLE_CLICK": 442
+  },
+
+  "toggleActivators": {
+    "W": {
+      "threshold": 260,
+      "quickGesture": "Center Target",
+      "quickToggleGesture": "Next Friend"
+    },
+    "Y": {
+      "threshold": 308,
+      "quickGesture": "Next Target",
+      "quickToggleGesture": "Close Friend"
+    },
+    "F2": {
+      "type": "independent_toggle",
+      "description": "Creates separate gesture space (_f2 variants) while held"
+    }
+  },
+
+  "specialKeys": {
+    "D": {
+      "type": "time_based_burst",
+      "description": "Hold to trigger Retaliates - normal: 7 Rs over 1.5s, Saber Ward boost: 14 Rs over 1.9s",
+      "burstCount": 7,
+      "burstDurationMs": [1500, 1500],
+      "saberWardBoost": {
+        "burstCount": 14,
+        "burstDurationMs": [1900, 1900],
+        "windowMs": 5000
+      },
+      "outputKey": "R",
+      "timing": {
+        "keyDownMs": [40, 70],
+        "gapMs": [50, 70]
+      }
+    },
+    "S": {
+      "type": "dual_purpose",
+      "description": "Quick fires Guard; Long (≥512ms) enters Group Member Toggle",
+      "quickAction": "Guard + Shield",
+      "longAction": "Group Member Toggle (intercepts 1/2/3/4)"
+    },
+    "C": {
+      "type": "hybrid",
+      "description": "Quick/long/toggle gestures + double-tap ESCAPE",
+      "doubleWindow": 337,
+      "doubleOutput": "ESCAPE"
+    },
+    "=": {
+      "type": "gap_based",
+      "description": "Ignores hold duration, only counts taps",
+      "window": 419,
+      "singleOutput": null,
+      "doubleOutput": "Smash (])"
+    }
+  },
+
+  "groupMemberToggle": {
+    "description": "When S held ≥512ms, intercepts 1/2/3/4 for group member targeting",
+    "mappings": {
+      "1": ["F10", "7"],
+      "2": ["F11", "7"],
+      "3": ["F12", "7"],
+      "4": ["INSERT", "7"]
+    }
+  },
+
+  "bufferTiers": {
+    "low": {
+      "min": 129,
+      "max": 163,
+      "description": "Same-category abilities, rapid fire"
+    },
+    "medium": {
+      "min": 309,
+      "max": 343,
+      "description": "After targeting, before abilities"
+    },
+    "high": {
+      "min": 513,
+      "max": 667,
+      "description": "Major transitions, cooldowns"
+    }
+  },
+
+  "iconKeys": {
+    "cog": { "key": "7", "rule": "AFTER targeting abilities" },
+    "shield": {
+      "key": "BACKSLASH",
+      "rule": "AFTER guard (dual-key with L)"
+    },
+    "gun": { "key": "SLASH", "rule": "BEFORE focus target" }
+  },
+
+  "timers": [
+    { "id": "drop", "duration": 16, "message": "drop" },
+    { "id": "burst", "duration": 13, "message": "burst" },
+    { "id": "laze", "duration": 31, "message": "laze" },
+    { "id": "yield", "duration": 45, "message": "yield" },
+    { "id": "fuel", "duration": 103, "message": "fuel" }
+  ],
+
+  "bindings": [
+    {
+      "inputKey": "1",
+      "gesture": "quick",
+      "name": "Crushing Blow",
+      "sequence": [{ "key": "N", "bufferTier": "low" }],
+      "gcdAbility": "CRUSHING_BLOW"
+    },
+    {
+      "inputKey": "1",
+      "gesture": "long",
+      "name": "Close Enemy + Cog",
+      "sequence": [
+        { "key": "Q", "bufferTier": "medium" },
+        { "key": "7", "bufferTier": "low" }
+      ]
+    },
+    {
+      "inputKey": "1",
+      "gesture": "quick_toggle",
+      "name": "Crushing Blow (toggled)",
+      "sequence": [{ "key": "N", "bufferTier": "low" }],
+      "gcdAbility": "CRUSHING_BLOW"
+    },
+    {
+      "inputKey": "1",
+      "gesture": "long_toggle",
+      "name": "Focus Target's ToT + Cog",
+      "sequence": [
+        { "key": "J", "bufferTier": "medium" },
+        { "key": "7", "bufferTier": "low" }
+      ]
+    },
+    {
+      "inputKey": "1",
+      "gesture": "long_f2",
+      "name": "Target of Target + Cog (F2)",
+      "sequence": [
+        { "key": "M", "bufferTier": "medium" },
+        { "key": "7", "bufferTier": "low" }
+      ]
+    },
+    {
+      "inputKey": "1",
+      "gesture": "quick_f2",
+      "name": "Crushing Blow (F2)",
+      "sequence": [{ "key": "N", "bufferTier": "low" }],
+      "gcdAbility": "CRUSHING_BLOW"
+    },
+
+    {
+      "inputKey": "2",
+      "gesture": "quick",
+      "name": "Force Scream",
+      "sequence": [{ "key": "O", "bufferTier": "low" }],
+      "gcdAbility": "FORCE_SCREAM"
+    },
+    {
+      "inputKey": "2",
+      "gesture": "long",
+      "name": "Sweeping Slash",
+      "sequence": [{ "key": "SHIFT+J", "bufferTier": "low" }],
+      "gcdAbility": "SWEEPING_SLASH"
+    },
+    {
+      "inputKey": "2",
+      "gesture": "quick_toggle",
+      "name": "Force Scream (toggled)",
+      "sequence": [{ "key": "O", "bufferTier": "low" }],
+      "gcdAbility": "FORCE_SCREAM"
+    },
+    {
+      "inputKey": "2",
+      "gesture": "long_toggle",
+      "name": "Sweeping Slash (toggled)",
+      "sequence": [{ "key": "SHIFT+J", "bufferTier": "low" }],
+      "gcdAbility": "SWEEPING_SLASH"
+    },
+    {
+      "inputKey": "2",
+      "gesture": "quick_f2",
+      "name": "Force Scream (F2)",
+      "sequence": [{ "key": "O", "bufferTier": "low" }],
+      "gcdAbility": "FORCE_SCREAM"
+    },
+    {
+      "inputKey": "2",
+      "gesture": "long_f2",
+      "name": "Sweeping Slash (F2)",
+      "sequence": [{ "key": "SHIFT+J", "bufferTier": "low" }],
+      "gcdAbility": "SWEEPING_SLASH"
+    },
+
+    {
+      "inputKey": "3",
+      "gesture": "quick",
+      "name": "Aegis Assault",
+      "sequence": [{ "key": "Z", "bufferTier": "low" }],
+      "gcdAbility": "AEGIS_ASSAULT"
+    },
+    {
+      "inputKey": "3",
+      "gesture": "long",
+      "name": "Vicious Slash",
+      "sequence": [{ "key": "8", "bufferTier": "low" }],
+      "gcdAbility": "VICIOUS_SLASH"
+    },
+    {
+      "inputKey": "3",
+      "gesture": "quick_toggle",
+      "name": "Mad Dash / Awe",
+      "sequence": [
+        {
+          "key": "ALT+Q",
+          "bufferTier": "low",
+          "echoHits": { "count": 2, "windowMs": 140 },
+          "minDelay": 20,
+          "maxDelay": 40
+        }
+      ]
+    },
+    {
+      "inputKey": "3",
+      "gesture": "quick_f2",
+      "name": "Mad Dash / Awe (F2)",
+      "sequence": [
+        {
+          "key": "ALT+Q",
+          "bufferTier": "low",
+          "echoHits": { "count": 2, "windowMs": 140 },
+          "minDelay": 20,
+          "maxDelay": 40
+        }
+      ]
+    },
+
+    {
+      "inputKey": "4",
+      "gesture": "quick",
+      "name": "Interrupt",
+      "sequence": [{ "key": "K", "bufferTier": "low" }]
+    },
+    {
+      "inputKey": "4",
+      "gesture": "quick_toggle",
+      "name": "Force Choke",
+      "sequence": [
+        {
+          "key": "DELETE",
+          "bufferTier": "low",
+          "echoHits": { "count": 1 }
+        }
+      ],
+      "gcdAbility": "FORCE_CHOKE"
+    },
+    {
+      "inputKey": "4",
+      "gesture": "quick_f2",
+      "name": "Electro Stun Grenade (F2)",
+      "sequence": [{ "key": "ALT+MINUS", "bufferTier": "low" }],
+      "gcdAbility": "ELECTRO_STUN"
+    },
+    {
+      "inputKey": "4",
+      "gesture": "long_f2",
+      "name": "Force Choke (F2)",
+      "sequence": [
+        {
+          "key": "DELETE",
+          "bufferTier": "low",
+          "echoHits": { "count": 1 }
+        }
+      ],
+      "gcdAbility": "FORCE_CHOKE"
+    },
+
+    {
+      "inputKey": "5",
+      "gesture": "quick",
+      "name": "Vicious Throw",
+      "sequence": [{ "key": "[", "bufferTier": "low" }],
+      "gcdAbility": "VICIOUS_THROW"
+    },
+    {
+      "inputKey": "5",
+      "gesture": "quick_toggle",
+      "name": "Backhand (toggled)",
+      "sequence": [
+        {
+          "key": "BACKSPACE",
+          "bufferTier": "low",
+          "echoHits": { "count": 1 }
+        }
+      ],
+      "gcdAbility": "BACKHAND"
+    },
+    {
+      "inputKey": "5",
+      "gesture": "quick_f2",
+      "name": "Saber Throw (F2)",
+      "sequence": [{ "key": "SHIFT+M", "bufferTier": "low" }],
+      "gcdAbility": "SABER_THROW"
+    },
+    {
+      "inputKey": "5",
+      "gesture": "long_f2",
+      "name": "Backhand (F2)",
+      "sequence": [
+        {
+          "key": "BACKSPACE",
+          "bufferTier": "low",
+          "echoHits": { "count": 1 }
+        }
+      ],
+      "gcdAbility": "BACKHAND"
+    },
+
+    {
+      "inputKey": "6",
+      "gesture": "quick",
+      "name": "Ravage",
+      "sequence": [{ "key": "ALT+J", "bufferTier": "low" }],
+      "gcdAbility": "RAVAGE"
+    },
+    {
+      "inputKey": "6",
+      "gesture": "quick_toggle",
+      "name": "Basic Attack (toggled)",
+      "sequence": [{ "key": "9", "bufferTier": "low" }],
+      "gcdAbility": "BASIC_ATTACK"
+    },
+    {
+      "inputKey": "6",
+      "gesture": "quick_f2",
+      "name": "Force Push (F2)",
+      "sequence": [
+        {
+          "key": "ALT+8",
+          "bufferTier": "low",
+          "echoHits": { "count": 2, "windowMs": 170 }
+        }
+      ],
+      "gcdAbility": "FORCE_PUSH"
+    },
+    {
+      "inputKey": "6",
+      "gesture": "long_f2",
+      "name": "Seismic Grenade (F2)",
+      "sequence": [{ "key": "ALT+SLASH", "bufferTier": "low" }],
+      "gcdAbility": "SEISMIC_GRENADE"
+    },
+
+    {
+      "inputKey": "W",
+      "gesture": "quick",
+      "name": "Center Target + Cog",
+      "sequence": [
+        { "key": "MINUS", "bufferTier": "medium" },
+        { "key": "7", "bufferTier": "low" }
+      ]
+    },
+    {
+      "inputKey": "W",
+      "gesture": "quick_toggle",
+      "name": "Next Friend + Cog",
+      "sequence": [
+        { "key": ".", "bufferTier": "medium" },
+        { "key": "7", "bufferTier": "low" }
+      ]
+    },
+    {
+      "inputKey": "W",
+      "gesture": "quick_f2",
+      "name": "Stun Break (F2)",
+      "sequence": [{ "key": "TAB", "bufferTier": "low" }]
+    },
+
+    {
+      "inputKey": "Y",
+      "gesture": "quick",
+      "name": "Next Target + Cog",
+      "sequence": [
+        { "key": "V", "bufferTier": "medium" },
+        { "key": "7", "bufferTier": "low" }
+      ]
+    },
+    {
+      "inputKey": "Y",
+      "gesture": "quick_toggle",
+      "name": "Close Friend + Cog",
+      "sequence": [
+        { "key": "'", "bufferTier": "medium" },
+        { "key": "7", "bufferTier": "low" }
+      ]
+    },
+    {
+      "inputKey": "Y",
+      "gesture": "quick_f2",
+      "name": "Endure Pain + Drop Timer (F2)",
+      "sequence": [
+        { "key": "SHIFT+,", "bufferTier": "low" },
+        { "timer": { "id": "drop", "duration": 16, "message": "drop" } }
+      ]
+    },
+
+    {
+      "inputKey": "A",
+      "gesture": "quick",
+      "name": "Leap",
+      "sequence": [
+        {
+          "key": "F9",
+          "bufferTier": "low",
+          "echoHits": { "count": 1 }
+        }
+      ],
+      "gcdAbility": "FORCE_LEAP"
+    },
+    {
+      "inputKey": "A",
+      "gesture": "long",
+      "name": "Single Taunt",
+      "sequence": [{ "key": "F6", "bufferTier": "low" }]
+    },
+    {
+      "inputKey": "A",
+      "gesture": "quick_toggle",
+      "name": "Leap (toggled)",
+      "sequence": [
+        {
+          "key": "F9",
+          "bufferTier": "low",
+          "echoHits": { "count": 1 }
+        }
+      ],
+      "gcdAbility": "FORCE_LEAP"
+    },
+    {
+      "inputKey": "A",
+      "gesture": "long_toggle",
+      "name": "Saber Throw",
+      "sequence": [{ "key": "SHIFT+M", "bufferTier": "low" }],
+      "gcdAbility": "SABER_THROW"
+    },
+
+    {
+      "inputKey": "S",
+      "gesture": "quick",
+      "name": "Guard + Shield",
+      "sequence": [
+        { "key": "L", "bufferTier": "low" },
+        { "key": "BACKSLASH", "minDelay": 4, "maxDelay": 10 }
+      ],
+      "gcdAbility": "GUARD"
+    },
+
+    {
+      "inputKey": "B",
+      "gesture": "quick",
+      "name": "Medpack",
+      "sequence": [{ "key": "ALT+9", "bufferTier": "low" }]
+    },
+    {
+      "inputKey": "B",
+      "gesture": "quick_toggle",
+      "name": "Adrenal",
+      "sequence": [{ "key": "CTRL+/", "bufferTier": "low" }]
+    },
+    {
+      "inputKey": "B",
+      "gesture": "quick_f2",
+      "name": "Endure Pain + Drop Timer + Medpack (F2)",
+      "sequence": [
+        { "key": "SHIFT+,", "bufferTier": "low" },
+        { "timer": { "id": "drop", "duration": 16, "message": "drop" } },
+        { "key": "ALT+9", "bufferTier": "medium" }
+      ]
+    },
+
+    {
+      "inputKey": "I",
+      "gesture": "quick",
+      "name": "Gun Icon + Focus Target + Cog",
+      "sequence": [
+        { "key": "SLASH", "bufferTier": "low" },
+        { "key": "X", "bufferTier": "medium" },
+        { "key": "7", "bufferTier": "low" }
+      ]
+    },
+    {
+      "inputKey": "I",
+      "gesture": "long",
+      "name": "Relic",
+      "sequence": [{ "key": "SHIFT+X", "bufferTier": "low" }]
+    },
+    {
+      "inputKey": "I",
+      "gesture": "quick_toggle",
+      "name": "Relic (toggled)",
+      "sequence": [{ "key": "SHIFT+X", "bufferTier": "low" }]
+    },
+    {
+      "inputKey": "I",
+      "gesture": "quick_f2",
+      "name": "Mass Taunt + Focus Mod + Single Taunt + 2.7s Enrage (F2)",
+      "sequence": [
+        { "key": "F7", "bufferTier": "low" },
+        {
+          "key": "ALT+F9",
+          "bufferTier": "medium",
+          "holdThroughNext": true,
+          "releaseDelayMin": 7,
+          "releaseDelayMax": 18
+        },
+        { "key": "F6", "bufferTier": "medium" },
+        { "key": "F8", "minDelay": 2650, "maxDelay": 2750 }
+      ]
+    },
+
+    {
+      "inputKey": "T",
+      "gesture": "quick",
+      "name": "Previous Target + Cog",
+      "sequence": [
+        { "key": "ALT+]", "bufferTier": "medium" },
+        { "key": "7", "bufferTier": "low" }
+      ]
+    },
+    {
+      "inputKey": "T",
+      "gesture": "quick_toggle",
+      "name": "Previous Friend + Cog",
+      "sequence": [
+        { "key": "ALT+.", "bufferTier": "medium" },
+        { "key": "7", "bufferTier": "low" }
+      ]
+    },
+
+    {
+      "inputKey": "U",
+      "gesture": "quick",
+      "name": "Saber Ward",
+      "sequence": [{ "key": ",", "bufferTier": "low" }]
+    },
+    {
+      "inputKey": "U",
+      "gesture": "quick_toggle",
+      "name": "Enraged Defense",
+      "sequence": [{ "key": "SHIFT+.", "bufferTier": "low" }]
+    },
+    {
+      "inputKey": "U",
+      "gesture": "quick_f2",
+      "name": "Invincible (F2)",
+      "sequence": [{ "key": "ALT+M", "bufferTier": "low" }]
+    },
+
+    {
+      "inputKey": "H",
+      "gesture": "quick",
+      "name": "Focus Mod + Single Taunt",
+      "sequence": [
+        { "minDelay": 300, "maxDelay": 300 },
+        {
+          "key": "ALT+F9",
+          "bufferTier": "low",
+          "holdThroughNext": true,
+          "releaseDelayMin": 7,
+          "releaseDelayMax": 18
+        },
+        { "key": "F6", "minDelay": 13, "maxDelay": 13 }
+      ]
+    },
+
+    {
+      "inputKey": "C",
+      "gesture": "quick",
+      "name": "Burst Timer (13s)",
+      "sequence": [
+        { "timer": { "id": "burst", "duration": 13, "message": "burst" } }
+      ]
+    },
+    {
+      "inputKey": "C",
+      "gesture": "long",
+      "name": "Laze Timer (31s)",
+      "sequence": [
+        { "timer": { "id": "laze", "duration": 31, "message": "laze" } }
+      ]
+    },
+    {
+      "inputKey": "C",
+      "gesture": "quick_toggle",
+      "name": "Yield Timer (45s)",
+      "sequence": [
+        { "timer": { "id": "yield", "duration": 45, "message": "yield" } }
+      ]
+    },
+    {
+      "inputKey": "C",
+      "gesture": "long_toggle",
+      "name": "Fuel Timer (103s)",
+      "sequence": [
+        { "timer": { "id": "fuel", "duration": 103, "message": "fuel" } }
+      ]
+    },
+
+    {
+      "inputKey": "=",
+      "gesture": "quick",
+      "name": "Smash",
+      "sequence": [{ "key": "]", "bufferTier": "low" }],
+      "gcdAbility": "SMASH",
+      "note": "Only fires on double-tap (gap-based detection)"
+    },
+
+    {
+      "inputKey": "MIDDLE_CLICK",
+      "gesture": "quick",
+      "name": "Max Zoom In + Delay + Scroll Out",
+      "sequence": [
+        { "key": "PAGEUP", "bufferTier": "low" },
+        { "minDelay": 420, "maxDelay": 480 },
+        {
+          "scrollDirection": "down",
+          "scrollMagnitude": 8,
+          "bufferTier": "low"
+        }
+      ]
+    },
+    {
+      "inputKey": "MIDDLE_CLICK",
+      "gesture": "long",
+      "name": "Scroll In (9 ticks)",
+      "sequence": [
+        { "scrollDirection": "up", "scrollMagnitude": 9, "bufferTier": "low" }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,127 @@
+{
+  "calibrationVersion": "1.0.0",
+  "calibratedAt": "2026-01-22T11:53:23.874Z",
+  "calibrationToolVersion": "1.0.0",
+  "gestureSettings": {
+    "multiPressWindow": 350,
+    "debounceDelay": 30,
+    "longPressMin": 520,
+    "longPressMax": 860,
+    "superLongMin": 861,
+    "superLongMax": 1300,
+    "cancelThreshold": 1301
+  },
+  "keyProfiles": {
+    "4": {
+      "multiPressWindow": 321,
+      "debounceDelay": 10,
+      "longPressMin": 136,
+      "longPressMax": 882,
+      "superLongMin": 883,
+      "superLongMax": 1465,
+      "cancelThreshold": 1466,
+      "calibrationData": {
+        "calibratedAt": "2026-01-22T11:52:32.064Z",
+        "sampleSize": 135,
+        "outlierCount": 6,
+        "confidence": 60,
+        "averages": {
+          "singleTap": 121,
+          "longHold": 473.9,
+          "superLongHold": 1026.2,
+          "multiTapGap": 108.4
+        },
+        "stdDeviations": {
+          "singleTap": 19,
+          "longHold": 249.7,
+          "superLongHold": 200.5,
+          "multiTapGap": 44.9
+        },
+        "ranges": {
+          "singleTap": [
+            72,
+            145
+          ],
+          "longHold": [
+            90,
+            832
+          ],
+          "superLongHold": [
+            662,
+            1365
+          ],
+          "multiTapGap": [
+            52,
+            249
+          ]
+        },
+        "reasoning": [
+          "Single tap max (222ms): max(144.76029999996535ms) + 3×stdDev(19ms) + 20ms buffer",
+          "Long press min (40ms): min long hold(89.78110000002198ms) - 50ms safety margin",
+          "Adjusted single/long boundary: singleMax=126ms, longMin=136ms (added 10ms gap)",
+          "Long press max (882ms): max long hold(832.0519999999669ms) + 50ms safety margin",
+          "Super long min (883ms): long press max + 1ms (seamless transition)",
+          "Super long max (1465ms): max super long hold(1364.5820999999996ms) + 100ms safety margin",
+          "Cancel threshold (1466ms): super long max + 1ms",
+          "Multi-press window (321ms): 2.5× mean gap(108ms) + 50ms buffer",
+          "Extension window (257ms): 80% of multi-press window"
+        ]
+      }
+    },
+    "F2": {
+      "multiPressWindow": 307,
+      "debounceDelay": 10,
+      "longPressMin": 452,
+      "longPressMax": 1034,
+      "superLongMin": 1035,
+      "superLongMax": 2068,
+      "cancelThreshold": 2069,
+      "calibrationData": {
+        "calibratedAt": "2026-01-22T11:52:32.055Z",
+        "sampleSize": 135,
+        "outlierCount": 7,
+        "confidence": 75,
+        "averages": {
+          "singleTap": 152.4,
+          "longHold": 768.4,
+          "superLongHold": 1127.5,
+          "multiTapGap": 102.9
+        },
+        "stdDeviations": {
+          "singleTap": 23.5,
+          "longHold": 137.8,
+          "superLongHold": 566.1,
+          "multiTapGap": 71.8
+        },
+        "ranges": {
+          "singleTap": [
+            118,
+            186
+          ],
+          "longHold": [
+            502,
+            984
+          ],
+          "superLongHold": [
+            68,
+            1968
+          ],
+          "multiTapGap": [
+            32,
+            316
+          ]
+        },
+        "reasoning": [
+          "Single tap max (277ms): max(185.94709999999031ms) + 3×stdDev(24ms) + 20ms buffer",
+          "Long press min (452ms): min long hold(501.5500999999931ms) - 50ms safety margin",
+          "Long press max (1034ms): max long hold(984.2288999999873ms) + 50ms safety margin",
+          "Super long min (1035ms): long press max + 1ms (seamless transition)",
+          "Super long max (2068ms): max super long hold(1967.9345999999787ms) + 100ms safety margin",
+          "Cancel threshold (2069ms): super long max + 1ms",
+          "Multi-press window (307ms): 2.5× mean gap(103ms) + 50ms buffer",
+          "Extension window (246ms): 80% of multi-press window"
+        ]
+      }
+    }
+  }
+}

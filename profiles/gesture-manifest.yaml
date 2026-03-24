@@ -1,0 +1,1424 @@
+# ═══════════════════════════════════════════════════════════════════════════════════════════════════════
+# SWTOR GESTURE MANIFEST
+# Profile: SWTOR Vengeance Juggernaut - Full Rotation
+# Generated: 2026-01-06
+# ═══════════════════════════════════════════════════════════════════════════════════════════════════════
+#
+# LEGEND
+# ───────────────────────────────────────────────────────────────────────────────────────────────────────
+# BUFFER TIERS:     ▸ low (129-163ms)  ▸ medium (229-263ms)  ▸ high (513-667ms)
+# ICONS:            🎯 cog = NUMPAD_SUBTRACT   🔫 gun = NUMPAD_ADD   🛡️ shield = NUMPAD_MULTIPLY (dualKey)
+# DUAL KEY:         [key₁ +6ms→ key₂] = Two keys pressed near-simultaneously
+# HOLD MODIFIERS:   🔒 SHIFT+R (Focus Target Modifier) - Held through next ability execution
+#                   Use holdThroughNext: true, releaseDelayMin/Max to control release timing
+# ═══════════════════════════════════════════════════════════════════════════════════════════════════════
+
+profile:
+  name: "SWTOR Vengeance Juggernaut - Full Rotation"
+  description: "Complete keybind profile with focus modifier, targeting, conundrum-optimized assignment, Endure Pain, Enraged Defense, Discord controls, and extended timer system"
+
+gestureSettings:
+  multiPressWindow: 355
+  debounceDelay: 10
+  longPressMin: 520
+  longPressMax: 860
+  superLongMin: 861
+  superLongMax: 1300
+  cancelThreshold: 1301
+
+# ═══════════════════════════════════════════════════════════════════════════════════════════════════════
+#  KEY: W
+# ═══════════════════════════════════════════════════════════════════════════════════════════════════════
+
+"W":
+  single:
+    name: "Jump"
+    sequence:
+      - { key: "NUMPAD0", buffer: low }
+
+  single_long:
+    name: "Mad Dash"
+    sequence:
+      - { key: "ALT+Q", buffer: low }
+
+  single_super_long:
+    name: ~ # ── NOT ASSIGNED ──
+    sequence: []
+
+  double:
+    name: "Jump + Acquire Center Target"
+    sequence:
+      - { key: "NUMPAD0", buffer: low }
+      - { key: "SHIFT+O", buffer: medium }
+      - { key: "NUMPAD_SUBTRACT", buffer: low }
+
+  double_long:
+    name: ~ # ── NOT ASSIGNED ──
+    sequence: []
+
+  double_super_long:
+    name: ~ # ── NOT ASSIGNED ──
+    sequence: []
+
+  triple:
+    name: "Jump + Acquire Center Target + Leap"
+    sequence:
+      - { key: "NUMPAD0", buffer: low }
+      - { key: "SHIFT+O", buffer: medium }
+      - { key: "NUMPAD_SUBTRACT", buffer: low }
+      - { key: "F9", buffer: low }
+
+  triple_long:
+    name: ~ # ── NOT ASSIGNED ──
+    sequence: []
+
+  triple_super_long:
+    name: ~ # ── NOT ASSIGNED ──
+    sequence: []
+
+  quadruple:
+    name: "Leap Spam (4x)"
+    sequence:
+      - { key: "F9", buffer: low }
+      - { key: "F9", buffer: low }
+      - { key: "F9", buffer: low }
+      - { key: "F9", buffer: low }
+
+  quadruple_long:
+    name: "Jump + Acquire Center Target + Target of Target + Guard Swap"
+    sequence:
+      - { key: "NUMPAD0", buffer: low }
+      - { key: "SHIFT+O", buffer: medium }
+      - { key: "NUMPAD_SUBTRACT", buffer: low }
+      - { key: "M", buffer: medium }
+      - { key: "NUMPAD_SUBTRACT", buffer: low }
+      - { key: "L", buffer: low }
+      - { key: "NUMPAD_MULTIPLY", buffer: low }
+
+  quadruple_super_long:
+    name: "Jump + Acquire Center Target + Target of Target + Intercede"
+    sequence:
+      - { key: "NUMPAD0", buffer: low }
+      - { key: "SHIFT+O", buffer: medium }
+      - { key: "NUMPAD_SUBTRACT", buffer: low }
+      - { key: "M", buffer: medium }
+      - { key: "NUMPAD_SUBTRACT", buffer: low }
+      - { key: ";", buffer: low }
+# ═══════════════════════════════════════════════════════════════════════════════════════════════════════
+#  KEY: A
+# ═══════════════════════════════════════════════════════════════════════════════════════════════════════
+
+"A":
+  single:
+    name: "Leap"
+    sequence:
+      - { key: "F9", buffer: low }
+
+  single_long:
+    name: "Single Target Taunt"
+    sequence:
+      - { key: "F6", buffer: low }
+
+  single_super_long:
+    name: ~ # ── NOT ASSIGNED ──
+    sequence: []
+
+  double:
+    name: ~ # ── NOT ASSIGNED ──
+    sequence: []
+
+  double_long:
+    name: ~ # ── NOT ASSIGNED ──
+    sequence: []
+
+  double_super_long:
+    name: ~ # ── NOT ASSIGNED ──
+    sequence: []
+
+  triple:
+    name: ~ # ── NOT ASSIGNED ──
+    sequence: []
+
+  triple_long:
+    name: ~ # ── NOT ASSIGNED ──
+    sequence: []
+
+  triple_super_long:
+    name: ~ # ── NOT ASSIGNED ──
+    sequence: []
+
+  quadruple:
+    name: ~ # ── NOT ASSIGNED ──
+    sequence: []
+
+  quadruple_long:
+    name: ~ # ── NOT ASSIGNED ──
+    sequence: []
+
+  quadruple_super_long:
+    name: ~ # ── NOT ASSIGNED ──
+    sequence: []
+
+# ═══════════════════════════════════════════════════════════════════════════════════════════════════════
+#  KEY: S
+# ═══════════════════════════════════════════════════════════════════════════════════════════════════════
+
+"S":
+  single:
+    name: "Group Member 1"
+    sequence:
+      - { key: "NUMPAD1", buffer: medium }
+      - { key: "NUMPAD_SUBTRACT", buffer: low }
+
+  single_long:
+    name: "Group Member 2"
+    sequence:
+      - { key: "NUMPAD2", buffer: medium }
+      - { key: "NUMPAD_SUBTRACT", buffer: low }
+
+  single_super_long:
+    name: ~ # ── NOT ASSIGNED ──
+    sequence: []
+
+  double:
+    name: "Group Member 3"
+    sequence:
+      - { key: "NUMPAD3", buffer: medium }
+      - { key: "NUMPAD_SUBTRACT", buffer: low }
+
+  double_long:
+    name: ~ # ── NOT ASSIGNED ──
+    sequence: []
+
+  double_super_long:
+    name: ~ # ── NOT ASSIGNED ──
+    sequence: []
+
+  triple:
+    name: "Group Member 4"
+    sequence:
+      - { key: "NUMPAD7", buffer: medium }
+      - { key: "NUMPAD_SUBTRACT", buffer: low }
+
+  triple_long:
+    name: ~ # ── NOT ASSIGNED ──
+    sequence: []
+
+  triple_super_long:
+    name: ~ # ── NOT ASSIGNED ──
+    sequence: []
+
+  quadruple:
+    name: "Mass Taunt + 🔒 Focus Target Modifier + Single Target Taunt + Enrage (1.2s delay)"
+    sequence:
+      - { key: "F7", buffer: low }
+      - {
+          key: "SHIFT+R",
+          buffer: medium,
+          holdThroughNext: true,
+          releaseDelay: "7-18",
+        } # 🔒 Held through F6
+      - { key: "F6", buffer: medium } # Executes while SHIFT+R held, releases SHIFT+R after 7-18ms
+      - { key: "F8", delay: "1200-1210" }
+
+  quadruple_long:
+    name: ~ # ── NOT ASSIGNED ──
+    sequence: []
+
+  quadruple_super_long:
+    name: ~ # ── NOT ASSIGNED ──
+    sequence: []
+
+# ═══════════════════════════════════════════════════════════════════════════════════════════════════════
+#  KEY: D
+# ═══════════════════════════════════════════════════════════════════════════════════════════════════════
+
+"D":
+  single:
+    name: ~ # ── NOT ASSIGNED ──
+    sequence: []
+
+  single_long:
+    name: "Escape Key"
+    sequence:
+      - { key: "ESCAPE", buffer: low }
+
+  single_super_long:
+    name: ~ # ── NOT ASSIGNED ──
+    sequence: []
+
+  double:
+    name: ~ # ── NOT ASSIGNED ──
+    sequence: []
+
+  double_long:
+    name: ~ # ── NOT ASSIGNED ──
+    sequence: []
+
+  double_super_long:
+    name: ~ # ── NOT ASSIGNED ──
+    sequence: []
+
+  triple:
+    name: ~ # ── NOT ASSIGNED ──
+    sequence: []
+
+  triple_long:
+    name: ~ # ── NOT ASSIGNED ──
+    sequence: []
+
+  triple_super_long:
+    name: ~ # ── NOT ASSIGNED ──
+    sequence: []
+
+  quadruple:
+    name: ~ # ── NOT ASSIGNED ──
+    sequence: []
+
+  quadruple_long:
+    name: ~ # ── NOT ASSIGNED ──
+    sequence: []
+
+  quadruple_super_long:
+    name: ~ # ── NOT ASSIGNED ──
+    sequence: []
+
+# ═══════════════════════════════════════════════════════════════════════════════════════════════════════
+#  KEY: B
+# ═══════════════════════════════════════════════════════════════════════════════════════════════════════
+
+"B":
+  single:
+    name: "Out of Combat Heal"
+    sequence:
+      - { key: "NUMPAD_DECIMAL", buffer: low }
+
+  single_long:
+    name: "RP Walk Toggle"
+    sequence:
+      - { key: "BACKSPACE", buffer: low }
+
+  single_super_long:
+    name: "Mute SWTOR"
+    sequence:
+      - { key: "END", buffer: low }
+
+  double:
+    name: ~ # ── NOT ASSIGNED ──
+    sequence: []
+
+  double_long:
+    name: "Mute SWTOR"
+    sequence:
+      - { key: "END", buffer: low }
+
+  double_super_long:
+    name: ~ # ── NOT ASSIGNED ──
+    sequence: []
+
+  triple:
+    name: ~ # ── NOT ASSIGNED ──
+    sequence: []
+
+  triple_long:
+    name: ~ # ── NOT ASSIGNED ──
+    sequence: []
+
+  triple_super_long:
+    name: ~ # ── NOT ASSIGNED ──
+    sequence: []
+
+  quadruple:
+    name: ~ # ── NOT ASSIGNED ──
+    sequence: []
+
+  quadruple_long:
+    name: ~ # ── NOT ASSIGNED ──
+    sequence: []
+
+  quadruple_super_long:
+    name: ~ # ── NOT ASSIGNED ──
+    sequence: []
+
+# ═══════════════════════════════════════════════════════════════════════════════════════════════════════
+#  KEY: I
+# ═══════════════════════════════════════════════════════════════════════════════════════════════════════
+
+"I":
+  single:
+    name: "Next Enemy"
+    sequence:
+      - { key: "V", buffer: medium }
+      - { key: "NUMPAD_SUBTRACT", buffer: low }
+
+  single_long:
+    name: ~ # ── NOT ASSIGNED ──
+    sequence: []
+
+  single_super_long:
+    name: "Acquire Center Target"
+    sequence:
+      - { key: "SHIFT+O", buffer: low }
+      - { key: "NUMPAD_SUBTRACT", buffer: low }
+
+  double:
+    name: "Next Friend"
+    sequence:
+      - { key: ".", buffer: low }
+      - { key: "NUMPAD_SUBTRACT", buffer: low }
+
+  double_long:
+    name: ~ # ── NOT ASSIGNED ──
+    sequence: []
+
+  double_super_long:
+    name: ~ # ── NOT ASSIGNED ──
+    sequence: []
+
+  triple:
+    name: ~ # ── NOT ASSIGNED ──
+    sequence: []
+
+  triple_long:
+    name: ~ # ── NOT ASSIGNED ──
+    sequence: []
+
+  triple_super_long:
+    name: ~ # ── NOT ASSIGNED ──
+    sequence: []
+
+  quadruple:
+    name: ~ # ── NOT ASSIGNED ──
+    sequence: []
+
+  quadruple_long:
+    name: ~ # ── NOT ASSIGNED ──
+    sequence: []
+
+  quadruple_super_long:
+    name: ~ # ── NOT ASSIGNED ──
+    sequence: []
+
+# ═══════════════════════════════════════════════════════════════════════════════════════════════════════
+#  KEY: Y
+# ═══════════════════════════════════════════════════════════════════════════════════════════════════════
+
+"Y":
+  single:
+    name: "Saber Ward"
+    sequence:
+      - { key: ",", buffer: low }
+
+  single_long:
+    name: "Invincible"
+    sequence:
+      - { key: "ALT+M", buffer: low }
+
+  single_super_long:
+    name: ~ # ── NOT ASSIGNED ──
+    sequence: []
+
+  double:
+    name: "Enraged Defense + Single Target Taunt"
+    sequence:
+      - { key: "SHIFT+.", buffer: medium }
+      - { key: "F6", buffer: low }
+
+  double_long:
+    name: ~ # ── NOT ASSIGNED ──
+    sequence: []
+
+  double_super_long:
+    name: ~ # ── NOT ASSIGNED ──
+    sequence: []
+
+  triple:
+    name: ~ # ── NOT ASSIGNED ──
+    sequence: []
+
+  triple_long:
+    name: ~ # ── NOT ASSIGNED ──
+    sequence: []
+
+  triple_super_long:
+    name: ~ # ── NOT ASSIGNED ──
+    sequence: []
+
+  quadruple:
+    name: ~ # ── NOT ASSIGNED ──
+    sequence: []
+
+  quadruple_long:
+    name: ~ # ── NOT ASSIGNED ──
+    sequence: []
+
+  quadruple_super_long:
+    name: ~ # ── NOT ASSIGNED ──
+    sequence: []
+
+# ═══════════════════════════════════════════════════════════════════════════════════════════════════════
+#  KEY: U
+# ═══════════════════════════════════════════════════════════════════════════════════════════════════════
+
+"U":
+  single:
+    name: "Med Pack"
+    sequence:
+      - { key: "ALT+O", buffer: low }
+
+  single_long:
+    name: "Adrenal"
+    sequence:
+      - { key: "ALT+N", buffer: low }
+
+  single_super_long:
+    name: "Relic"
+    sequence:
+      - { key: "SHIFT+X", buffer: low }
+
+  double:
+    name: "Endure Pain + Med Pack"
+    sequence:
+      - { key: "SHIFT+,", buffer: low }
+      - { key: "ALT+O", buffer: low }
+
+  double_long:
+    name: ~ # ── NOT ASSIGNED ──
+    sequence: []
+
+  double_super_long:
+    name: ~ # ── NOT ASSIGNED ──
+    sequence: []
+
+  triple:
+    name: ~ # ── NOT ASSIGNED ──
+    sequence: []
+
+  triple_long:
+    name: ~ # ── NOT ASSIGNED ──
+    sequence: []
+
+  triple_super_long:
+    name: ~ # ── NOT ASSIGNED ──
+    sequence: []
+
+  quadruple:
+    name: ~ # ── NOT ASSIGNED ──
+    sequence: []
+
+  quadruple_long:
+    name: ~ # ── NOT ASSIGNED ──
+    sequence: []
+
+  quadruple_super_long:
+    name: ~ # ── NOT ASSIGNED ──
+    sequence: []
+
+# ═══════════════════════════════════════════════════════════════════════════════════════════════════════
+#  KEY: T
+# ═══════════════════════════════════════════════════════════════════════════════════════════════════════
+
+"T":
+  single:
+    name: "Previous Enemy"
+    sequence:
+      - { key: "SHIFT+N", buffer: medium }
+      - { key: "NUMPAD_SUBTRACT", buffer: low }
+
+  single_long:
+    name: ~ # ── NOT ASSIGNED ──
+    sequence: []
+
+  single_super_long:
+    name: "Previous Friend"
+    sequence:
+      - { key: "ALT+.", buffer: medium }
+      - { key: "NUMPAD_SUBTRACT", buffer: low }
+
+  double:
+    name: "Stun Break + Single Target Taunt"
+    sequence:
+      - { key: "Shift+V", buffer: medium }
+      - { key: "NUMPAD_SUBTRACT", buffer: low }
+
+  double_long:
+    name: ~ # ── NOT ASSIGNED ──
+    sequence: []
+
+  double_super_long:
+    name: ~ # ── NOT ASSIGNED ──
+    sequence: []
+
+  triple:
+    name: ~ # ── NOT ASSIGNED ──
+    sequence: []
+
+  triple_long:
+    name: ~ # ── NOT ASSIGNED ──
+    sequence: []
+
+  triple_super_long:
+    name: ~ # ── NOT ASSIGNED ──
+    sequence: []
+
+  quadruple:
+    name: ~ # ── NOT ASSIGNED ──
+    sequence: []
+
+  quadruple_long:
+    name: ~ # ── NOT ASSIGNED ──
+    sequence: []
+
+  quadruple_super_long:
+    name: ~ # ── NOT ASSIGNED ──
+    sequence: []
+
+# ═══════════════════════════════════════════════════════════════════════════════════════════════════════
+#  KEY: C
+# ═══════════════════════════════════════════════════════════════════════════════════════════════════════
+
+"C":
+  single:
+    name: ~ # ── NOT ASSIGNED ──
+    sequence: []
+
+  single_long:
+    name: ~ # ── NOT ASSIGNED ──
+    sequence: []
+
+  single_super_long:
+    name: ~ # ── NOT ASSIGNED ──
+    sequence: []
+
+  double:
+    name: "Timer: Laze (31s) - TTS: 'laze'"
+    sequence:
+      - {
+          key: "END",
+          buffer: low,
+          name: "Timer placeholder - implement TTS: 'laze' after 31 seconds",
+        }
+
+  double_long:
+    name: ~ # ── NOT ASSIGNED ──
+    sequence: []
+
+  double_super_long:
+    name: ~ # ── NOT ASSIGNED ──
+    sequence: []
+
+  triple:
+    name: ~ # ── NOT ASSIGNED ──
+    sequence: []
+
+  triple_long:
+    name: ~ # ── NOT ASSIGNED ──
+    sequence: []
+
+  triple_super_long:
+    name: ~ # ── NOT ASSIGNED ──
+    sequence: []
+
+  quadruple:
+    name: ~ # ── NOT ASSIGNED ──
+    sequence: []
+
+  quadruple_long:
+    name: ~ # ── NOT ASSIGNED ──
+    sequence: []
+
+  quadruple_super_long:
+    name: ~ # ── NOT ASSIGNED ──
+    sequence: []
+
+# ═══════════════════════════════════════════════════════════════════════════════════════════════════════
+#  KEY: H
+# ═══════════════════════════════════════════════════════════════════════════════════════════════════════
+
+"H":
+  single:
+    name: ~ # ── NOT ASSIGNED ──
+    sequence: []
+
+  single_long:
+    name: ~ # ── NOT ASSIGNED ──
+    sequence: []
+
+  single_super_long:
+    name: ~ # ── NOT ASSIGNED ──
+    sequence: []
+
+  double:
+    name: ~ # ── NOT ASSIGNED ──
+    sequence: []
+
+  double_long:
+    name: ~ # ── NOT ASSIGNED ──
+    sequence: []
+
+  double_super_long:
+    name: ~ # ── NOT ASSIGNED ──
+    sequence: []
+
+  triple:
+    name: ~ # ── NOT ASSIGNED ──
+    sequence: []
+
+  triple_long:
+    name: ~ # ── NOT ASSIGNED ──
+    sequence: []
+
+  triple_super_long:
+    name: ~ # ── NOT ASSIGNED ──
+    sequence: []
+
+  quadruple:
+    name: ~ # ── NOT ASSIGNED ──
+    sequence: []
+
+  quadruple_long:
+    name: ~ # ── NOT ASSIGNED ──
+    sequence: []
+
+  quadruple_super_long:
+    name: ~ # ── NOT ASSIGNED ──
+    sequence: []
+
+# ═══════════════════════════════════════════════════════════════════════════════════════════════════════
+#  KEY: P
+# ═══════════════════════════════════════════════════════════════════════════════════════════════════════
+
+"P":
+  single:
+    name: ~ # ── NOT ASSIGNED ──
+    sequence: []
+
+  single_long:
+    name: "Timer: Yield (45s) - TTS: 'yield'"
+    sequence:
+      - {
+          key: "END",
+          buffer: low,
+          name: "Timer placeholder - implement TTS: 'yield' after 45 seconds",
+        }
+
+  single_super_long:
+    name: "Timer: Fuel (103s) - TTS: 'fuel'"
+    sequence:
+      - {
+          key: "END",
+          buffer: low,
+          name: "Timer placeholder - implement TTS: 'fuel' after 1 minute 43 seconds",
+        }
+
+  double:
+    name: "Timer: Burst (13s) - TTS: 'burst'"
+    sequence:
+      - {
+          key: "END",
+          buffer: low,
+          name: "Timer placeholder - implement TTS: 'burst' after 13 seconds",
+        }
+
+  double_long:
+    name: ~ # ── NOT ASSIGNED ──
+    sequence: []
+
+  double_super_long:
+    name: ~ # ── NOT ASSIGNED ──
+    sequence: []
+
+  triple:
+    name: ~ # ── NOT ASSIGNED ──
+    sequence: []
+
+  triple_long:
+    name: ~ # ── NOT ASSIGNED ──
+    sequence: []
+
+  triple_super_long:
+    name: ~ # ── NOT ASSIGNED ──
+    sequence: []
+
+  quadruple:
+    name: ~ # ── NOT ASSIGNED ──
+    sequence: []
+
+  quadruple_long:
+    name: ~ # ── NOT ASSIGNED ──
+    sequence: []
+
+  quadruple_super_long:
+    name: ~ # ── NOT ASSIGNED ──
+    sequence: []
+
+# ═══════════════════════════════════════════════════════════════════════════════════════════════════════
+#  KEY: 1
+# ═══════════════════════════════════════════════════════════════════════════════════════════════════════
+
+"1":
+  single:
+    name: "Crushing Blow"
+    sequence:
+      - { key: "N", buffer: low }
+
+  single_long:
+    name: "Backhand"
+      sequence:
+        - { key: "ALT+R", buffer: low, echoHits: 3 }
+
+  single_super_long:
+    name: "Force Choke"
+      sequence:
+        - { key: "SHIFT+Z", buffer: low, echoHits: 2 }
+
+  double:
+    name: "Retaliation + Crushing Blow"
+    sequence:
+      - { key: "D", buffer: medium }
+      - { key: "N", buffer: low }
+
+  double_long:
+    name: "Single Target Taunt + Crushing Blow"
+    sequence:
+      - { key: "F6", buffer: medium }
+      - { key: "N", buffer: low }
+
+  double_super_long:
+    name: "Close Enemy + Crushing Blow"
+    sequence:
+      - { key: "Q", buffer: medium }
+      - { key: "NUMPAD_SUBTRACT", buffer: low }
+      - { key: "N", buffer: low }
+
+  triple:
+    name: ~ # ── NOT ASSIGNED ──
+    sequence: []
+
+  triple_long:
+    name: ~ # ── NOT ASSIGNED ──
+    sequence: []
+
+  triple_super_long:
+    name: ~ # ── NOT ASSIGNED ──
+    sequence: []
+
+  quadruple:
+    name: "Close Enemy + Crushing Blow + Retaliation + Retaliation"
+    sequence:
+      - { key: "Q", buffer: medium }
+      - { key: "NUMPAD_SUBTRACT", buffer: low }
+      - { key: "N", buffer: low }
+      - { key: "R", buffer: low }
+      - { key: "R", buffer: low }
+
+  quadruple_long:
+    name: ~ # ── NOT ASSIGNED ──
+    sequence: []
+
+  quadruple_super_long:
+    name: ~ # ── NOT ASSIGNED ──
+    sequence: []
+
+# ═══════════════════════════════════════════════════════════════════════════════════════════════════════
+#  KEY: 2
+# ═══════════════════════════════════════════════════════════════════════════════════════════════════════
+
+"2":
+  single:
+    name: "Force Scream"
+    sequence:
+      - { key: "O", buffer: low }
+
+  single_long:
+    name: "Electro Stun"
+    sequence:
+      - { key: "ALT+K", buffer: low }
+
+  single_super_long:
+    name: "Force Push"
+    sequence:
+      - { key: "ALT+L", buffer: low }
+
+  double:
+    name: "Smash"
+    sequence:
+      - { key: "]", buffer: low }
+
+  double_long:
+    name: ~ # ── NOT ASSIGNED ──
+    sequence: []
+
+  double_super_long:
+    name: ~ # ── NOT ASSIGNED ──
+    sequence: []
+
+  triple:
+    name: ~ # ── NOT ASSIGNED ──
+    sequence: []
+
+  triple_long:
+    name: ~ # ── NOT ASSIGNED ──
+    sequence: []
+
+  triple_super_long:
+    name: ~ # ── NOT ASSIGNED ──
+    sequence: []
+
+  quadruple:
+    name: ~ # ── NOT ASSIGNED ──
+    sequence: []
+
+  quadruple_long:
+    name: ~ # ── NOT ASSIGNED ──
+    sequence: []
+
+  quadruple_super_long:
+    name: ~ # ── NOT ASSIGNED ──
+    sequence: []
+
+# ═══════════════════════════════════════════════════════════════════════════════════════════════════════
+#  KEY: 3
+# ═══════════════════════════════════════════════════════════════════════════════════════════════════════
+
+"3":
+  single:
+    name: "Aegis Assault"
+    sequence:
+      - { key: "Z", buffer: low }
+
+  single_long:
+    name: "Awe/Reflect/Mad Dash"
+    sequence:
+      - { key: "ALT+Q", buffer: low }
+
+  single_super_long:
+    name: "Seismic Grenade"
+    sequence:
+      - { key: "ALT+J", buffer: low }
+
+  double:
+    name: "Single Target Taunt + Aegis Assault"
+    sequence:
+      - { key: "F6", buffer: low }
+      - { key: "Z", buffer: low }
+
+  double_long:
+    name: ~ # ── NOT ASSIGNED ──
+    sequence: []
+
+  double_super_long:
+    name: "Close Enemy + Aegis Assault"
+    sequence:
+      - { key: "Q", buffer: medium }
+      - { key: "NUMPAD_SUBTRACT", buffer: low }
+      - { key: "Z", buffer: low }
+
+  triple:
+    name: "Endure Pain + Timer: Drop (16s)"
+    sequence:
+      - { key: "SHIFT+,", buffer: low }
+      - {
+          key: "END",
+          buffer: low,
+          name: "Timer placeholder - implement TTS: 'drop inc' after 16 seconds",
+        }
+
+  triple_long:
+    name: ~ # ── NOT ASSIGNED ──
+    sequence: []
+
+  triple_super_long:
+    name: ~ # ── NOT ASSIGNED ──
+    sequence: []
+
+  quadruple:
+    name: ~ # ── NOT ASSIGNED ──
+    sequence: []
+
+  quadruple_long:
+    name: ~ # ── NOT ASSIGNED ──
+    sequence: []
+
+  quadruple_super_long:
+    name: ~ # ── NOT ASSIGNED ──
+    sequence: []
+
+# ═══════════════════════════════════════════════════════════════════════════════════════════════════════
+#  KEY: 4
+# ═══════════════════════════════════════════════════════════════════════════════════════════════════════
+
+"4":
+  single:
+    name: "Interrupt"
+    sequence:
+      - { key: "K", buffer: low }
+
+  single_long:
+    name: "Guard Swap"
+    sequence:
+      - { key: "L", buffer: low }
+      - { key: "NUMPAD_MULTIPLY", buffer: low }
+
+  single_super_long:
+    name: "Intercede"
+    sequence:
+      - { key: ";", buffer: low }
+
+  double:
+    name: "Close Enemy + Interrupt"
+    sequence:
+      - { key: "Q", buffer: medium }
+      - { key: "NUMPAD_SUBTRACT", buffer: low }
+      - { key: "K", buffer: low }
+
+  double_long:
+    name: "Target of Target + Guard Swap"
+    sequence:
+      - { key: "M", buffer: medium }
+      - { key: "NUMPAD_SUBTRACT", buffer: low }
+      - { key: "L", buffer: low, dualKey: "NUMPAD_MULTIPLY", dualKeyOffset: 6 }
+
+  double_super_long:
+    name: "Target of Target + Intercede"
+    sequence:
+      - { key: "M", buffer: medium }
+      - { key: "NUMPAD_SUBTRACT", buffer: low }
+      - { key: ";", buffer: low }
+
+  triple:
+    name: ~ # ── NOT ASSIGNED ──
+    sequence: []
+
+  triple_long:
+    name: ~ # ── NOT ASSIGNED ──
+    sequence: []
+
+  triple_super_long:
+    name: ~ # ── NOT ASSIGNED ──
+    sequence: []
+
+  quadruple:
+    name: ~ # ── NOT ASSIGNED ──
+    sequence: []
+
+  quadruple_long:
+    name: ~ # ── NOT ASSIGNED ──
+    sequence: []
+
+  quadruple_super_long:
+    name: ~ # ── NOT ASSIGNED ──
+    sequence: []
+
+# ═══════════════════════════════════════════════════════════════════════════════════════════════════════
+#  KEY: 5
+# ═══════════════════════════════════════════════════════════════════════════════════════════════════════
+
+"5":
+  single:
+    name: "Vicious Throw"
+    sequence:
+      - { key: "[", buffer: low }
+
+  single_long:
+    name: "Saber Throw"
+    sequence:
+      - { key: "SHIFT+M", buffer: low }
+
+  single_super_long:
+    name: "Vicious Slash"
+    sequence:
+      - { key: "SHIFT+L", buffer: low }
+
+  double:
+    name: "Single Target Taunt + Vicious Throw"
+    sequence:
+      - { key: "F6", buffer: low }
+      - { key: "[", buffer: medium }
+
+  double_long:
+    name: "Single Target Taunt + Saber Throw"
+    sequence:
+      - { key: "F6", buffer: medium }
+      - { key: "SHIFT+M", buffer: low }
+
+  double_super_long:
+    name: "Single Target Taunt + Vicious Slash"
+    sequence:
+      - { key: "F6", buffer: medium }
+      - { key: "SHIFT+L", buffer: low }
+
+  triple:
+    name: ~ # ── NOT ASSIGNED ──
+    sequence: []
+
+  triple_long:
+    name: ~ # ── NOT ASSIGNED ──
+    sequence: []
+
+  triple_super_long:
+    name: ~ # ── NOT ASSIGNED ──
+    sequence: []
+
+  quadruple:
+    name: ~ # ── NOT ASSIGNED ──
+    sequence: []
+
+  quadruple_long:
+    name: ~ # ── NOT ASSIGNED ──
+    sequence: []
+
+  quadruple_super_long:
+    name: ~ # ── NOT ASSIGNED ──
+    sequence: []
+
+# ═══════════════════════════════════════════════════════════════════════════════════════════════════════
+#  KEY: 6
+# ═══════════════════════════════════════════════════════════════════════════════════════════════════════
+
+"6":
+  single:
+    name: "Sweeping Slash"
+    sequence:
+      - { key: "SHIFT+J", buffer: low }
+
+  single_long:
+    name: "Ravage"
+    sequence:
+      - { key: "SHIFT+K", buffer: low }
+
+  single_super_long:
+    name: "Basic Attack"
+    sequence:
+      - { key: "SHIFT+Q", buffer: low }
+
+  double:
+    name: "Sweeping Slash + Single Target Taunt"
+    sequence:
+      - { key: "SHIFT+J", buffer: low }
+      - { key: "F6", buffer: low }
+
+  double_long:
+    name: "Ravage + Single Target Taunt"
+    sequence:
+      - { key: "SHIFT+K", buffer: low }
+      - { key: "F6", buffer: low }
+
+  double_super_long:
+    name: "Basic Attack + Single Target Taunt"
+    sequence:
+      - { key: "SHIFT+Q", buffer: low }
+      - { key: "F6", buffer: low }
+
+  triple:
+    name: "Sweeping Slash + Retaliation + Retaliation"
+    sequence:
+      - { key: "SHIFT+J", buffer: low }
+      - { key: "D", buffer: medium }
+      - { key: "D", buffer: medium }
+      - { key: "F6", buffer: low }
+
+  triple_long:
+    name: "Ravage + Retaliation + Retaliation"
+    sequence:
+      - { key: "SHIFT+K", buffer: low }
+      - { key: "D", buffer: medium }
+      - { key: "D", buffer: medium }
+      - { key: "F6", buffer: low }
+
+  triple_super_long:
+    name: "Basic Attack + Retaliation + Retaliation"
+    sequence:
+      - { key: "SHIFT+Q", buffer: low }
+      - { key: "D", buffer: medium }
+      - { key: "D", buffer: medium }
+      - { key: "F6", buffer: low }
+
+  quadruple:
+    name: ~ # ── NOT ASSIGNED ──
+    sequence: []
+
+  quadruple_long:
+    name: ~ # ── NOT ASSIGNED ──
+    sequence: []
+
+  quadruple_super_long:
+    name: ~ # ── NOT ASSIGNED ──
+    sequence: []
+
+# ═══════════════════════════════════════════════════════════════════════════════════════════════════════
+#  KEY: 7
+# ═══════════════════════════════════════════════════════════════════════════════════════════════════════
+
+"7":
+  single:
+    name: "Discord Volume: Low"
+    sequence:
+      - { key: "END", buffer: low, name: "Discord Volume: Low" }
+
+  single_long:
+    name: ~ # ── NOT ASSIGNED ──
+    sequence: []
+
+  single_super_long:
+    name: ~ # ── NOT ASSIGNED ──
+    sequence: []
+
+  double:
+    name: "Discord Volume: Low + Toggle Mic"
+    sequence:
+      - { key: "END", buffer: medium, name: "Discord Volume: Low" }
+      - { key: "CTRL+M", buffer: low, name: "Discord Toggle Mic" }
+
+  double_long:
+    name: ~ # ── NOT ASSIGNED ──
+    sequence: []
+
+  double_super_long:
+    name: ~ # ── NOT ASSIGNED ──
+    sequence: []
+
+  triple:
+    name: ~ # ── NOT ASSIGNED ──
+    sequence: []
+
+  triple_long:
+    name: ~ # ── NOT ASSIGNED ──
+    sequence: []
+
+  triple_super_long:
+    name: ~ # ── NOT ASSIGNED ──
+    sequence: []
+
+  quadruple:
+    name: ~ # ── NOT ASSIGNED ──
+    sequence: []
+
+  quadruple_long:
+    name: ~ # ── NOT ASSIGNED ──
+    sequence: []
+
+  quadruple_super_long:
+    name: ~ # ── NOT ASSIGNED ──
+    sequence: []
+
+# ═══════════════════════════════════════════════════════════════════════════════════════════════════════
+#  KEY: 8
+# ═══════════════════════════════════════════════════════════════════════════════════════════════════════
+
+"8":
+  single:
+    name: "Discord Volume: Medium"
+    sequence:
+      - { key: "END", buffer: low, name: "Discord Volume: Medium" }
+
+  single_long:
+    name: ~ # ── NOT ASSIGNED ──
+    sequence: []
+
+  single_super_long:
+    name: ~ # ── NOT ASSIGNED ──
+    sequence: []
+
+  double:
+    name: "Discord Volume: Low + Toggle Mic"
+    sequence:
+      - { key: "END", buffer: medium, name: "Discord Volume: Low" }
+      - { key: "CTRL+M", buffer: low, name: "Discord Toggle Mic" }
+
+  double_long:
+    name: ~ # ── NOT ASSIGNED ──
+    sequence: []
+
+  double_super_long:
+    name: ~ # ── NOT ASSIGNED ──
+    sequence: []
+
+  triple:
+    name: ~ # ── NOT ASSIGNED ──
+    sequence: []
+
+  triple_long:
+    name: ~ # ── NOT ASSIGNED ──
+    sequence: []
+
+  triple_super_long:
+    name: ~ # ── NOT ASSIGNED ──
+    sequence: []
+
+  quadruple:
+    name: ~ # ── NOT ASSIGNED ──
+    sequence: []
+
+  quadruple_long:
+    name: ~ # ── NOT ASSIGNED ──
+    sequence: []
+
+  quadruple_super_long:
+    name: ~ # ── NOT ASSIGNED ──
+    sequence: []
+
+# ═══════════════════════════════════════════════════════════════════════════════════════════════════════
+#  KEY: 9
+# ═══════════════════════════════════════════════════════════════════════════════════════════════════════
+
+"9":
+  single:
+    name: "Discord Volume: High + Deafen"
+    sequence:
+      - { key: "END", buffer: low, name: "Discord Volume: High" }
+      - { key: "CTRL+SHIFT+D", buffer: low, name: "Discord Deafen" }
+
+  single_long:
+    name: ~ # ── NOT ASSIGNED ──
+    sequence: []
+
+  single_super_long:
+    name: ~ # ── NOT ASSIGNED ──
+    sequence: []
+
+  double:
+    name: ~ # ── NOT ASSIGNED ──
+    sequence: []
+
+  double_long:
+    name: ~ # ── NOT ASSIGNED ──
+    sequence: []
+
+  double_super_long:
+    name: ~ # ── NOT ASSIGNED ──
+    sequence: []
+
+  triple:
+    name: ~ # ── NOT ASSIGNED ──
+    sequence: []
+
+  triple_long:
+    name: ~ # ── NOT ASSIGNED ──
+    sequence: []
+
+  triple_super_long:
+    name: ~ # ── NOT ASSIGNED ──
+    sequence: []
+
+  quadruple:
+    name: ~ # ── NOT ASSIGNED ──
+    sequence: []
+
+  quadruple_long:
+    name: ~ # ── NOT ASSIGNED ──
+    sequence: []
+
+  quadruple_super_long:
+    name: ~ # ── NOT ASSIGNED ──
+    sequence: []
+
+# ═══════════════════════════════════════════════════════════════════════════════════════════════════════
+#  KEY: =
+# ═══════════════════════════════════════════════════════════════════════════════════════════════════════
+
+"=":
+  single:
+    name: ~ # ── NOT ASSIGNED ──
+    sequence: []
+
+  single_long:
+    name: ~ # ── NOT ASSIGNED ──
+    sequence: []
+
+  single_super_long:
+    name: ~ # ── NOT ASSIGNED ──
+    sequence: []
+
+  double:
+    name: "Quick Scroll Down"
+    sequence:
+      - { scrollDirection: "down", scrollMagnitude: 8, buffer: low }
+
+  double_long:
+    name: ~ # ── NOT ASSIGNED ──
+    sequence: []
+
+  double_super_long:
+    name: ~ # ── NOT ASSIGNED ──
+    sequence: []
+
+  triple:
+    name: ~ # ── NOT ASSIGNED ──
+    sequence: []
+
+  triple_long:
+    name: ~ # ── NOT ASSIGNED ──
+    sequence: []
+
+  triple_super_long:
+    name: ~ # ── NOT ASSIGNED ──
+    sequence: []
+
+  quadruple:
+    name: ~ # ── NOT ASSIGNED ──
+    sequence: []
+
+  quadruple_long:
+    name: ~ # ── NOT ASSIGNED ──
+    sequence: []
+
+  quadruple_super_long:
+    name: ~ # ── NOT ASSIGNED ──
+    sequence: []
+
+# ═══════════════════════════════════════════════════════════════════════════════════════════════════════
+#  KEY: MIDDLE_CLICK
+# ═══════════════════════════════════════════════════════════════════════════════════════════════════════
+
+"MIDDLE_CLICK":
+  single:
+    name: ~ # ── NOT ASSIGNED ──
+    sequence: []
+
+  single_long:
+    name: ~ # ── NOT ASSIGNED ──
+    sequence: []
+
+  single_super_long:
+    name: ~ # ── NOT ASSIGNED ──
+    sequence: []
+
+  double:
+    name: ~ # ── NOT ASSIGNED ──
+    sequence: []
+
+  double_long:
+    name: ~ # ── NOT ASSIGNED ──
+    sequence: []
+
+  double_super_long:
+    name: ~ # ── NOT ASSIGNED ──
+    sequence: []
+
+  triple:
+    name: ~ # ── NOT ASSIGNED ──
+    sequence: []
+
+  triple_long:
+    name: ~ # ── NOT ASSIGNED ──
+    sequence: []
+
+  triple_super_long:
+    name: ~ # ── NOT ASSIGNED ──
+    sequence: []
+
+  quadruple:
+    name: ~ # ── NOT ASSIGNED ──
+    sequence: []
+
+  quadruple_long:
+    name: ~ # ── NOT ASSIGNED ──
+    sequence: []
+
+  quadruple_super_long:
+    name: ~ # ── NOT ASSIGNED ──
+    sequence: []
+# ═══════════════════════════════════════════════════════════════════════════════════════════════════════
+# END OF MANIFEST
+# ═══════════════════════════════════════════════════════════════════════════════════════════════════════

@@ -1,0 +1,99 @@
+{
+  "name": "Staggered Execution Test Profile",
+  "description": "Test profile for verifying overlapping (staggered) sequence execution. Triggers 5 gestures within a 200ms window to prove sequences can overlap without blocking.",
+  "gestureSettings": {
+    "multiPressWindow": 80,
+    "debounceDelay": 10,
+    "longPressMin": 80,
+    "longPressMax": 145,
+    "superLongMin": 146,
+    "superLongMax": 265,
+    "cancelThreshold": 266
+  },
+  "macros": [
+    {
+      "name": "Stagger_S_Double",
+      "trigger": { "key": "S", "gesture": "double" },
+      "sequence": [
+        { "key": "J", "minDelay": 40, "maxDelay": 50, "bufferTier": "low" },
+        { "key": "K", "minDelay": 40, "maxDelay": 50, "bufferTier": "low" },
+        { "key": "L", "minDelay": 40, "maxDelay": 50, "bufferTier": "low" }
+      ],
+      "enabled": true,
+      "_comment": "Fires at T+0ms - 3 steps, ~120-150ms total duration"
+    },
+    {
+      "name": "Stagger_Y_Double",
+      "trigger": { "key": "Y", "gesture": "double" },
+      "sequence": [
+        { "key": "M", "minDelay": 40, "maxDelay": 50, "bufferTier": "low" },
+        { "key": "N", "minDelay": 40, "maxDelay": 50, "bufferTier": "low" },
+        { "key": "O", "minDelay": 40, "maxDelay": 50, "bufferTier": "low" }
+      ],
+      "enabled": true,
+      "_comment": "Fires at T+50ms - overlaps with S sequence"
+    },
+    {
+      "name": "Stagger_6_Double",
+      "trigger": { "key": "6", "gesture": "double" },
+      "sequence": [
+        { "key": "Q", "minDelay": 40, "maxDelay": 50, "bufferTier": "low" },
+        { "key": "V", "minDelay": 40, "maxDelay": 50, "bufferTier": "low" },
+        { "key": "X", "minDelay": 40, "maxDelay": 50, "bufferTier": "low" }
+      ],
+      "enabled": true,
+      "_comment": "Fires at T+100ms - overlaps with S and Y sequences"
+    },
+    {
+      "name": "Stagger_5_DoubleLong",
+      "trigger": { "key": "5", "gesture": "double_long" },
+      "sequence": [
+        { "key": "Z", "minDelay": 40, "maxDelay": 50, "bufferTier": "low" },
+        { "key": "F6", "minDelay": 40, "maxDelay": 50, "bufferTier": "low" }
+      ],
+      "enabled": true,
+      "_comment": "Fires at T+150ms - requires 80-145ms hold on second tap"
+    },
+    {
+      "name": "Stagger_U_Double",
+      "trigger": { "key": "U", "gesture": "double" },
+      "sequence": [
+        { "key": "F7", "minDelay": 40, "maxDelay": 50, "bufferTier": "low" },
+        { "key": "F8", "minDelay": 40, "maxDelay": 50, "bufferTier": "low" }
+      ],
+      "enabled": true,
+      "_comment": "Fires at T+200ms - replaces impossible same-key double gesture scenario"
+    },
+
+    {
+      "name": "Stagger_ConundrumA",
+      "trigger": { "key": "T", "gesture": "double" },
+      "sequence": [
+        { "key": "R", "minDelay": 40, "maxDelay": 50, "bufferTier": "low" },
+        {
+          "key": "SHIFT+R",
+          "minDelay": 40,
+          "maxDelay": 50,
+          "bufferTier": "low"
+        }
+      ],
+      "enabled": true,
+      "_comment": "Uses R both raw AND with SHIFT - CONUNDRUM KEY for traffic control testing"
+    },
+    {
+      "name": "Stagger_ConundrumB",
+      "trigger": { "key": "C", "gesture": "double" },
+      "sequence": [
+        {
+          "key": "SHIFT+R",
+          "minDelay": 40,
+          "maxDelay": 50,
+          "bufferTier": "low"
+        },
+        { "key": "R", "minDelay": 40, "maxDelay": 50, "bufferTier": "low" }
+      ],
+      "enabled": true,
+      "_comment": "Also uses R - will queue behind ConundrumA if triggered together"
+    }
+  ]
+}

@@ -1,0 +1,113 @@
+{
+  "name": "Dual Key Test Profile",
+  "description": "Test dual key press functionality with F6+F7 combo and 6ms offset",
+  "gestureSettings": {
+    "multiPressWindow": 80,
+    "debounceDelay": 10,
+    "longPressMin": 80,
+    "longPressMax": 145,
+    "superLongMin": 146,
+    "superLongMax": 265,
+    "cancelThreshold": 266
+  },
+  "macros": [
+    {
+      "name": "Dual Key F6+F7",
+      "trigger": { "key": "1", "gesture": "single" },
+      "sequence": [
+        {
+          "key": "F6",
+          "dualKey": "F7",
+          "dualKeyOffsetMs": 6,
+          "keyDownDuration": [15, 27],
+          "dualKeyDownDuration": [15, 27],
+          "minDelay": 25,
+          "maxDelay": 35
+        }
+      ],
+      "enabled": true
+    },
+    {
+      "name": "Dual Key J+K (10ms offset)",
+      "trigger": { "key": "2", "gesture": "single" },
+      "sequence": [
+        {
+          "key": "J",
+          "dualKey": "K",
+          "dualKeyOffsetMs": 10,
+          "keyDownDuration": [20, 30],
+          "dualKeyDownDuration": [25, 35],
+          "minDelay": 30,
+          "maxDelay": 40
+        }
+      ],
+      "enabled": true
+    },
+    {
+      "name": "Dual Key NUMPAD Combo",
+      "trigger": { "key": "3", "gesture": "single" },
+      "sequence": [
+        {
+          "key": "NUMPAD1",
+          "dualKey": "NUMPAD2",
+          "dualKeyOffsetMs": 8,
+          "minDelay": 25,
+          "maxDelay": 30
+        }
+      ],
+      "enabled": true
+    },
+    {
+      "name": "Triple Dual Keys",
+      "trigger": { "key": "4", "gesture": "single" },
+      "sequence": [
+        {
+          "key": "L",
+          "dualKey": "M",
+          "dualKeyOffsetMs": 5,
+          "minDelay": 25,
+          "maxDelay": 30
+        },
+        {
+          "key": "N",
+          "dualKey": "O",
+          "dualKeyOffsetMs": 7,
+          "minDelay": 30,
+          "maxDelay": 40
+        },
+        {
+          "key": "Q",
+          "dualKey": "R",
+          "dualKeyOffsetMs": 6,
+          "minDelay": 35,
+          "maxDelay": 45
+        }
+      ],
+      "enabled": true
+    },
+    {
+      "name": "Mixed Single and Dual",
+      "trigger": { "key": "5", "gesture": "single" },
+      "sequence": [
+        {
+          "key": "V",
+          "minDelay": 25,
+          "maxDelay": 30
+        },
+        {
+          "key": "X",
+          "dualKey": "Z",
+          "dualKeyOffsetMs": 6,
+          "minDelay": 30,
+          "maxDelay": 35
+        },
+        {
+          "key": "F8",
+          "minDelay": 35,
+          "maxDelay": 45
+        }
+      ],
+      "enabled": true
+    }
+  ]
+}

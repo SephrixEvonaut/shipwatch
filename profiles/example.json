@@ -1,0 +1,125 @@
+{
+  "name": "SWTOR Combat Macros",
+  "description": "Example macro profile for SWTOR ability combos",
+  "gestureSettings": {
+    "multiPressWindow": 350,
+    "debounceDelay": 10,
+    "longPressMin": 80,
+    "longPressMax": 145,
+    "superLongMin": 146,
+    "superLongMax": 265,
+    "cancelThreshold": 266
+  },
+  "macros": [
+    {
+      "name": "Single Press Execute",
+      "trigger": { "key": "1", "gesture": "single" },
+      "sequence": [{ "key": "f1", "minDelay": 25, "maxDelay": 35 }],
+      "enabled": true
+    },
+    {
+      "name": "Single Long Charge",
+      "trigger": { "key": "2", "gesture": "single_long" },
+      "sequence": [
+        { "key": "a", "minDelay": 25, "maxDelay": 30 },
+        { "key": "f1", "minDelay": 30, "maxDelay": 40 }
+      ],
+      "enabled": true
+    },
+    {
+      "name": "Single Super Long",
+      "trigger": { "key": "3", "gesture": "single_super_long" },
+      "sequence": [{ "key": "b", "minDelay": 30, "maxDelay": 40 }],
+      "enabled": true
+    },
+
+    {
+      "name": "Double Tap Burst",
+      "trigger": { "key": "4", "gesture": "double" },
+      "sequence": [
+        { "key": "c", "minDelay": 25, "maxDelay": 30 },
+        { "key": "d", "minDelay": 25, "maxDelay": 30 }
+      ],
+      "enabled": true
+    },
+    {
+      "name": "Double Long Combo",
+      "trigger": { "key": "5", "gesture": "double_long" },
+      "sequence": [
+        { "key": "e", "minDelay": 25, "maxDelay": 35 },
+        { "key": "f1", "minDelay": 30, "maxDelay": 40 }
+      ],
+      "enabled": true
+    },
+    {
+      "name": "Double Super Long",
+      "trigger": { "key": "6", "gesture": "double_super_long" },
+      "sequence": [{ "key": "g", "minDelay": 30, "maxDelay": 45 }],
+      "enabled": true
+    },
+
+    {
+      "name": "Triple Press Engage",
+      "trigger": { "key": "W", "gesture": "triple" },
+      "sequence": [
+        { "key": "h", "minDelay": 25, "maxDelay": 30 },
+        { "key": "h", "minDelay": 25, "maxDelay": 30 },
+        { "key": "f1", "minDelay": 30, "maxDelay": 40 }
+      ],
+      "enabled": true
+    },
+    {
+      "name": "Triple Long Followup",
+      "trigger": { "key": "A", "gesture": "triple_long" },
+      "sequence": [
+        { "key": "i", "minDelay": 25, "maxDelay": 30 },
+        { "key": "i", "minDelay": 25, "maxDelay": 30 },
+        { "key": "j", "minDelay": 30, "maxDelay": 40 }
+      ],
+      "enabled": true
+    },
+    {
+      "name": "Triple Super Long",
+      "trigger": { "key": "S", "gesture": "triple_super_long" },
+      "sequence": [
+        { "key": "k", "minDelay": 30, "maxDelay": 38 },
+        { "key": "f1", "minDelay": 35, "maxDelay": 50 }
+      ],
+      "enabled": true
+    },
+
+    {
+      "name": "Quadruple Rapid",
+      "trigger": { "key": "D", "gesture": "quadruple" },
+      "sequence": [
+        { "key": "l", "minDelay": 25, "maxDelay": 29 },
+        { "key": "l", "minDelay": 25, "maxDelay": 29 },
+        { "key": "l", "minDelay": 25, "maxDelay": 29 },
+        { "key": "f1", "minDelay": 30, "maxDelay": 40 }
+      ],
+      "enabled": true
+    },
+    {
+      "name": "Quadruple Long Finale",
+      "trigger": { "key": "B", "gesture": "quadruple_long" },
+      "sequence": [
+        { "key": "m", "minDelay": 30, "maxDelay": 40 },
+        { "key": "m", "minDelay": 30, "maxDelay": 40 },
+        { "key": "m", "minDelay": 30, "maxDelay": 40 },
+        { "key": "n", "minDelay": 35, "maxDelay": 50 }
+      ],
+      "enabled": true
+    },
+    {
+      "name": "Quadruple Super Finale",
+      "trigger": { "key": "C", "gesture": "quadruple_super_long" },
+      "sequence": [
+        { "key": "o", "minDelay": 35, "maxDelay": 45 },
+        { "key": "p", "minDelay": 35, "maxDelay": 45 },
+        { "key": "o", "minDelay": 35, "maxDelay": 45 },
+        { "key": "p", "minDelay": 40, "maxDelay": 55 }
+      ],
+      "enabled": true
+    }
+  ]
+}

@@ -1,0 +1,71 @@
+{
+  "calibrationVersion": "1.0.0",
+  "calibratedAt": "2026-01-22T05:09:31.241Z",
+  "calibrationToolVersion": "1.0.0",
+  "gestureSettings": {
+    "multiPressWindow": 350,
+    "debounceDelay": 30,
+    "longPressMin": 520,
+    "longPressMax": 860,
+    "superLongMin": 861,
+    "superLongMax": 1300,
+    "cancelThreshold": 1301
+  },
+  "keyProfiles": {
+    "W": {
+      "multiPressWindow": 375,
+      "debounceDelay": 10,
+      "longPressMin": 388,
+      "longPressMax": 662,
+      "superLongMin": 663,
+      "superLongMax": 1012,
+      "cancelThreshold": 1013,
+      "calibrationData": {
+        "calibratedAt": "2026-01-22T05:06:17.751Z",
+        "sampleSize": 45,
+        "outlierCount": 1,
+        "confidence": 55,
+        "averages": {
+          "singleTap": 103.3,
+          "longHold": 554.6,
+          "superLongHold": 796.7,
+          "multiTapGap": 130.1
+        },
+        "stdDeviations": {
+          "singleTap": 27.3,
+          "longHold": 73.1,
+          "superLongHold": 153,
+          "multiTapGap": 28.4
+        },
+        "ranges": {
+          "singleTap": [
+            81,
+            149
+          ],
+          "longHold": [
+            438,
+            612
+          ],
+          "superLongHold": [
+            530,
+            912
+          ],
+          "multiTapGap": [
+            70,
+            186
+          ]
+        },
+        "reasoning": [
+          "Single tap max (251ms): max(149.2373000000007ms) + 3×stdDev(27ms) + 20ms buffer",
+          "Long press min (388ms): min long hold(437.8627000000015ms) - 50ms safety margin",
+          "Long press max (662ms): max long hold(612.1818999999996ms) + 50ms safety margin",
+          "Super long min (663ms): long press max + 1ms (seamless transition)",
+          "Super long max (1012ms): max super long hold(912.0172999999995ms) + 100ms safety margin",
+          "Cancel threshold (1013ms): super long max + 1ms",
+          "Multi-press window (375ms): 2.5× mean gap(130ms) + 50ms buffer",
+          "Extension window (300ms): 80% of multi-press window"
+        ]
+      }
+    }
+  }
+}

@@ -1,0 +1,121 @@
+{
+  "name": "Concurrent Execution Test Profile",
+  "description": "Test profile for verifying concurrent sequence execution with traffic control. Triggers 4 gestures simultaneously with different conundrum key scenarios.",
+  "gestureSettings": {
+    "multiPressWindow": 80,
+    "debounceDelay": 10,
+    "longPressMin": 80,
+    "longPressMax": 145,
+    "superLongMin": 146,
+    "superLongMax": 265,
+    "cancelThreshold": 266
+  },
+  "macros": [
+    {
+      "name": "Input1_Double_SafeKeys",
+      "trigger": { "key": "1", "gesture": "double" },
+      "sequence": [
+        { "key": "J", "minDelay": 25, "maxDelay": 30, "bufferTier": "low" },
+        { "key": "K", "minDelay": 25, "maxDelay": 30, "bufferTier": "low" }
+      ],
+      "enabled": true,
+      "_comment": "Uses only raw keys J,K - no modifiers - SAFE (no traffic control)"
+    },
+    {
+      "name": "Input3_Triple_SafeKeys",
+      "trigger": { "key": "3", "gesture": "triple" },
+      "sequence": [
+        { "key": "L", "minDelay": 25, "maxDelay": 30, "bufferTier": "low" },
+        { "key": "M", "minDelay": 25, "maxDelay": 30, "bufferTier": "low" },
+        { "key": "N", "minDelay": 25, "maxDelay": 30, "bufferTier": "low" }
+      ],
+      "enabled": true,
+      "_comment": "Uses only raw keys L,M,N - no modifiers - SAFE (no traffic control)"
+    },
+    {
+      "name": "Input2_DoubleLong_ConundrumKey",
+      "trigger": { "key": "2", "gesture": "double_long" },
+      "sequence": [
+        { "key": "R", "minDelay": 25, "maxDelay": 30, "bufferTier": "low" },
+        {
+          "key": "SHIFT+R",
+          "minDelay": 25,
+          "maxDelay": 30,
+          "bufferTier": "low"
+        },
+        { "key": "V", "minDelay": 25, "maxDelay": 30, "bufferTier": "low" }
+      ],
+      "enabled": true,
+      "_comment": "Uses R both raw AND with SHIFT modifier - CONUNDRUM KEY (traffic control required)"
+    },
+    {
+      "name": "InputW_Double_ConundrumKey",
+      "trigger": { "key": "W", "gesture": "double" },
+      "sequence": [
+        { "key": "R", "minDelay": 25, "maxDelay": 30, "bufferTier": "low" },
+        { "key": "ALT+R", "minDelay": 25, "maxDelay": 30, "bufferTier": "low" }
+      ],
+      "enabled": true,
+      "_comment": "Uses R both raw AND with ALT modifier - CONUNDRUM KEY (traffic control required)"
+    },
+
+    {
+      "name": "Input5_Single_SharedConundrum",
+      "trigger": { "key": "5", "gesture": "single" },
+      "sequence": [
+        {
+          "key": "SHIFT+R",
+          "minDelay": 25,
+          "maxDelay": 30,
+          "bufferTier": "low"
+        },
+        { "key": "X", "minDelay": 25, "maxDelay": 30, "bufferTier": "low" }
+      ],
+      "enabled": true,
+      "_comment": "Uses SHIFT+R which shares R with other macros - demonstrates traffic control queuing"
+    },
+    {
+      "name": "Input6_Single_LongSequence",
+      "trigger": { "key": "6", "gesture": "single" },
+      "sequence": [
+        { "key": "Q", "minDelay": 25, "maxDelay": 30, "bufferTier": "low" },
+        { "key": "Q", "minDelay": 25, "maxDelay": 30, "bufferTier": "low" },
+        { "key": "Q", "minDelay": 25, "maxDelay": 30, "bufferTier": "low" },
+        { "key": "Q", "minDelay": 25, "maxDelay": 30, "bufferTier": "low" },
+        { "key": "Z", "minDelay": 25, "maxDelay": 30, "bufferTier": "low" }
+      ],
+      "enabled": true,
+      "_comment": "Longer sequence - tests concurrent execution duration"
+    },
+    {
+      "name": "Input7_Single_NoConflict",
+      "trigger": { "key": "7", "gesture": "single" },
+      "sequence": [
+        {
+          "key": "NUMPAD1",
+          "minDelay": 25,
+          "maxDelay": 30,
+          "bufferTier": "low"
+        },
+        {
+          "key": "NUMPAD2",
+          "minDelay": 25,
+          "maxDelay": 30,
+          "bufferTier": "low"
+        }
+      ],
+      "enabled": true,
+      "_comment": "Uses numpad keys with no modifier variants - SAFE"
+    },
+    {
+      "name": "InputB_Double_FunctionKeys",
+      "trigger": { "key": "B", "gesture": "double" },
+      "sequence": [
+        { "key": "F6", "minDelay": 25, "maxDelay": 30, "bufferTier": "low" },
+        { "key": "F7", "minDelay": 25, "maxDelay": 30, "bufferTier": "low" }
+      ],
+      "enabled": true,
+      "_comment": "Uses function keys - SAFE (no modifier variants)"
+    }
+  ]
+}

@@ -1,0 +1,135 @@
+{
+  "name": "Per-Key Isolation & Elongating Window Test",
+  "description": "Tests per-key gesture isolation, independent elongating windows, and simultaneous multi-key detection across all 12 gesture types",
+  "gestureSettings": {
+    "multiPressWindow": 80,
+    "debounceDelay": 10,
+    "longPressMin": 80,
+    "longPressMax": 145,
+    "superLongMin": 146,
+    "superLongMax": 265,
+    "cancelThreshold": 266
+  },
+  "macros": [
+    {
+      "name": "W Single → NUMPAD1",
+      "trigger": { "key": "W", "gesture": "single" },
+      "sequence": [{ "key": "NUMPAD1", "bufferTier": "low" }],
+      "enabled": true
+    },
+    {
+      "name": "W Double → NUMPAD2",
+      "trigger": { "key": "W", "gesture": "double" },
+      "sequence": [{ "key": "NUMPAD2", "bufferTier": "low" }],
+      "enabled": true
+    },
+    {
+      "name": "W Triple → NUMPAD3",
+      "trigger": { "key": "W", "gesture": "triple" },
+      "sequence": [{ "key": "NUMPAD3", "bufferTier": "low" }],
+      "enabled": true
+    },
+    {
+      "name": "W Quadruple → NUMPAD4",
+      "trigger": { "key": "W", "gesture": "quadruple" },
+      "sequence": [{ "key": "NUMPAD4", "bufferTier": "low" }],
+      "enabled": true
+    },
+    {
+      "name": "A Single_Long → F6",
+      "trigger": { "key": "A", "gesture": "single_long" },
+      "sequence": [{ "key": "F6", "bufferTier": "low" }],
+      "enabled": true
+    },
+    {
+      "name": "A Double_Long → F7",
+      "trigger": { "key": "A", "gesture": "double_long" },
+      "sequence": [{ "key": "F7", "bufferTier": "low" }],
+      "enabled": true
+    },
+    {
+      "name": "A Triple_Long → F8",
+      "trigger": { "key": "A", "gesture": "triple_long" },
+      "sequence": [{ "key": "F8", "bufferTier": "low" }],
+      "enabled": true
+    },
+    {
+      "name": "A Quadruple_Long → F9",
+      "trigger": { "key": "A", "gesture": "quadruple_long" },
+      "sequence": [{ "key": "F9", "bufferTier": "low" }],
+      "enabled": true
+    },
+    {
+      "name": "S Single_Super_Long → J",
+      "trigger": { "key": "S", "gesture": "single_super_long" },
+      "sequence": [{ "key": "J", "bufferTier": "low" }],
+      "enabled": true
+    },
+    {
+      "name": "S Double_Super_Long → K",
+      "trigger": { "key": "S", "gesture": "double_super_long" },
+      "sequence": [{ "key": "K", "bufferTier": "low" }],
+      "enabled": true
+    },
+    {
+      "name": "S Triple_Super_Long → L",
+      "trigger": { "key": "S", "gesture": "triple_super_long" },
+      "sequence": [{ "key": "L", "bufferTier": "low" }],
+      "enabled": true
+    },
+    {
+      "name": "S Quadruple_Super_Long → M",
+      "trigger": { "key": "S", "gesture": "quadruple_super_long" },
+      "sequence": [{ "key": "M", "bufferTier": "low" }],
+      "enabled": true
+    },
+    {
+      "name": "1 Single → N",
+      "trigger": { "key": "1", "gesture": "single" },
+      "sequence": [{ "key": "N", "bufferTier": "low" }],
+      "enabled": true
+    },
+    {
+      "name": "1 Triple → O",
+      "trigger": { "key": "1", "gesture": "triple" },
+      "sequence": [{ "key": "O", "bufferTier": "low" }],
+      "enabled": true
+    },
+    {
+      "name": "2 Quadruple → Q",
+      "trigger": { "key": "2", "gesture": "quadruple" },
+      "sequence": [{ "key": "Q", "bufferTier": "low" }],
+      "enabled": true
+    },
+    {
+      "name": "3 Double → R",
+      "trigger": { "key": "3", "gesture": "double" },
+      "sequence": [{ "key": "R", "bufferTier": "low" }],
+      "enabled": true
+    },
+    {
+      "name": "5 Single → Z",
+      "trigger": { "key": "5", "gesture": "single" },
+      "sequence": [{ "key": "Z", "bufferTier": "low" }],
+      "enabled": true
+    },
+    {
+      "name": "B Double_Super_Long → NUMPAD_ADD",
+      "trigger": { "key": "B", "gesture": "double_super_long" },
+      "sequence": [{ "key": "NUMPAD_ADD", "bufferTier": "low" }],
+      "enabled": true
+    },
+    {
+      "name": "D Triple_Long → NUMPAD_MULTIPLY",
+      "trigger": { "key": "D", "gesture": "triple_long" },
+      "sequence": [{ "key": "NUMPAD_MULTIPLY", "bufferTier": "low" }],
+      "enabled": true
+    },
+    {
+      "name": "MIDDLE_CLICK Single_Long → NUMPAD_SUBTRACT",
+      "trigger": { "key": "MIDDLE_CLICK", "gesture": "single_long" },
+      "sequence": [{ "key": "NUMPAD_SUBTRACT", "bufferTier": "low" }],
+      "enabled": true
+    }
+  ]
+}

@@ -1,0 +1,147 @@
+{
+  "name": "Elongating Window Test Profile",
+  "description": "Test elongating detection window with slow multi-press gestures on key 1",
+  "gestureSettings": {
+    "multiPressWindow": 80,
+    "debounceDelay": 10,
+    "longPressMin": 80,
+    "longPressMax": 145,
+    "superLongMin": 146,
+    "superLongMax": 265,
+    "cancelThreshold": 266
+  },
+  "macros": [
+    {
+      "name": "Single Press → NUMPAD1",
+      "trigger": { "key": "1", "gesture": "single" },
+      "sequence": [
+        {
+          "key": "NUMPAD1",
+          "minDelay": 25,
+          "maxDelay": 35
+        }
+      ],
+      "enabled": true
+    },
+    {
+      "name": "Double Press → NUMPAD2",
+      "trigger": { "key": "1", "gesture": "double" },
+      "sequence": [
+        {
+          "key": "NUMPAD2",
+          "minDelay": 25,
+          "maxDelay": 35
+        }
+      ],
+      "enabled": true
+    },
+    {
+      "name": "Triple Press → NUMPAD3",
+      "trigger": { "key": "1", "gesture": "triple" },
+      "sequence": [
+        {
+          "key": "NUMPAD3",
+          "minDelay": 25,
+          "maxDelay": 35
+        }
+      ],
+      "enabled": true
+    },
+    {
+      "name": "Quadruple Press → NUMPAD4",
+      "trigger": { "key": "1", "gesture": "quadruple" },
+      "sequence": [
+        {
+          "key": "NUMPAD4",
+          "minDelay": 25,
+          "maxDelay": 35
+        }
+      ],
+      "enabled": true
+    },
+    {
+      "name": "Single Long → NUMPAD5",
+      "trigger": { "key": "2", "gesture": "single_long" },
+      "sequence": [
+        {
+          "key": "NUMPAD5",
+          "minDelay": 25,
+          "maxDelay": 35
+        }
+      ],
+      "enabled": true
+    },
+    {
+      "name": "Double Long → NUMPAD6",
+      "trigger": { "key": "2", "gesture": "double_long" },
+      "sequence": [
+        {
+          "key": "NUMPAD6",
+          "minDelay": 25,
+          "maxDelay": 35
+        }
+      ],
+      "enabled": true
+    },
+    {
+      "name": "Triple Long → NUMPAD7",
+      "trigger": { "key": "2", "gesture": "triple_long" },
+      "sequence": [
+        {
+          "key": "NUMPAD7",
+          "minDelay": 25,
+          "maxDelay": 35
+        }
+      ],
+      "enabled": true
+    },
+    {
+      "name": "Quadruple Long → NUMPAD8",
+      "trigger": { "key": "2", "gesture": "quadruple_long" },
+      "sequence": [
+        {
+          "key": "NUMPAD8",
+          "minDelay": 25,
+          "maxDelay": 35
+        }
+      ],
+      "enabled": true
+    },
+    {
+      "name": "W Key Double → Test Elongating",
+      "trigger": { "key": "W", "gesture": "double" },
+      "sequence": [
+        {
+          "key": "NUMPAD_ADD",
+          "minDelay": 25,
+          "maxDelay": 35
+        }
+      ],
+      "enabled": true
+    },
+    {
+      "name": "W Key Triple → Test Elongating",
+      "trigger": { "key": "W", "gesture": "triple" },
+      "sequence": [
+        {
+          "key": "NUMPAD_MULTIPLY",
+          "minDelay": 25,
+          "maxDelay": 35
+        }
+      ],
+      "enabled": true
+    },
+    {
+      "name": "W Key Quadruple → Test Elongating",
+      "trigger": { "key": "W", "gesture": "quadruple" },
+      "sequence": [
+        {
+          "key": "NUMPAD_SUBTRACT",
+          "minDelay": 25,
+          "maxDelay": 35
+        }
+      ],
+      "enabled": true
+    }
+  ]
+}
