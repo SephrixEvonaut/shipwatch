@@ -36,8 +36,8 @@ function createWindow() {
   });
 }
 
-app.whenReady().then(() => {
-  registerIpcHandlers(ipcMain, () => mainWindow);
+app.whenReady().then(async () => {
+  await registerIpcHandlers(ipcMain, () => mainWindow);
   createWindow();
 
   app.on("activate", () => {

@@ -57,7 +57,9 @@ describe("CooldownManager", () => {
   describe("Cooldown Action Detection", () => {
     test("detects explicit actionId field", () => {
       const binding = createBinding("My Macro", "CRUSHING_BLOW");
-      expect(cooldownManager.detectCooldownAction(binding)).toBe("CRUSHING_BLOW");
+      expect(cooldownManager.detectCooldownAction(binding)).toBe(
+        "CRUSHING_BLOW",
+      );
     });
 
     test("returns null when no actionId present", () => {
@@ -93,7 +95,9 @@ describe("CooldownManager", () => {
 
       expect(cooldownManager.isCooldownActive()).toBe(true);
       expect(cooldownManager.getCooldownRemaining()).toBeGreaterThan(0);
-      expect(cooldownManager.getCooldownRemaining()).toBeLessThanOrEqual(DEFAULT_COOLDOWN_MS);
+      expect(cooldownManager.getCooldownRemaining()).toBeLessThanOrEqual(
+        DEFAULT_COOLDOWN_MS,
+      );
     });
 
     test("cooldown does not activate for non-cooldown binding", () => {
